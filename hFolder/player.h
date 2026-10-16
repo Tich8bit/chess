@@ -1,40 +1,22 @@
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <iostream>
+#include "member.h"
 
-class Player {
+class Player : public Member {
 public:
-    Player(std::string_view name,
-           int birthYear,
-           int rating,
-           std::string_view category);
+    Player(int id, std::string_view fullName, int birthYear, int rating);
 
-    int getId() const;
-    std::string_view getName() const;
-    int getBirthYear() const;
     int getRating() const;
-    std::string_view getCategory() const;
-    int getAge() const;
-
-    void setName(std::string_view newName);
     void setRating(int newRating);
-    void setCategory(std::string_view newCategory);
 
-    void inputPlayer();
-    void printInfo(std::ostream& os) const;
-    bool equals(const Player& other) const;
+    std::string_view getRole() const override;
+    double calculateMetric() const override;
+    std::string_view getMetricName() const override;
+    void printMemberInformation() const override;
+
+    friend int getPlayerRating(const Player& p) { return p._rating; }
+    friend bool isExperienced(const Player& p) { return p.getAge() >= 40 && p._rating >= 1500; }
 
 private:
-    static int _nextId;
-    static const int MIN_RATING;
-    static const int MAX_RATING;
-    static const int CURRENT_YEAR;
-
-    int _id;
-    std::string _name;
-    int _birthYear;
     int _rating;
-    std::string _category;
 };
