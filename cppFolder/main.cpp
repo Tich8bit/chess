@@ -44,7 +44,7 @@ int chooseStartMode() {
     return choice;
 }
 
-void printMenu() {
+void printMainMenu() {
     cout << "_________________________________________\n";
     cout << "|          ШАХМАТНЫЙ КЛУБ               |\n";
     cout << "|_______________________________________|\n";
@@ -55,22 +55,33 @@ void printMenu() {
     cout << "|5.  Добавить тренера                   |\n";
     cout << "|6.  Добавить турнир                    |\n";
     cout << "|7.  Добавить тренировку                |\n";
-    cout << "|8.  Создать партию                     |\n";
+    cout << "|8.  Записать игрока на тренировку      |\n";
+    cout << "|9.  Создать партию                     |\n";
     cout << "|_______________________________________|\n";
-    cout << "|9.  Сохранить в файл                   |\n";
-    cout << "|10. Загрузить из файла                 |\n";
-    cout << "|11. Сформировать отчёт                 |\n";
+    cout << "|10. Сохранить в файл                   |\n";
+    cout << "|11. Загрузить из файла                 |\n";
+    cout << "|12. Сформировать отчёт                 |\n";
     cout << "|_______________________________________|\n";
-    cout << "|12. Поиск игрока по имени              |\n";
-    cout << "|13. Группировка по роли                |\n";
-    cout << "|14. Топ-N по метрике                   |\n";
-    cout << "|15. Уникальные события                 |\n";
-    cout << "|16. Кол-во с рейтингом > N             |\n";
-    cout << "|17. Min/Max по метрике                 |\n";
-    cout << "|18. Сумма рейтингов                    |\n";
-    cout << "|19. Сортировка по 2 критериям          |\n";
+    cout << "|13. Аналитика (STL)                    |\n";
     cout << "|_______________________________________|\n";
     cout << "|0.  Выход                              |\n";
+    cout << "|_______________________________________|\n";
+}
+
+void printAnalyticsMenu() {
+    cout << "_________________________________________\n";
+    cout << "|          АНАЛИТИКА (STL)              |\n";
+    cout << "|_______________________________________|\n";
+    cout << "|1.  Поиск игрока по имени              |\n";
+    cout << "|2.  Группировка по роли                |\n";
+    cout << "|3.  Топ-N по метрике                   |\n";
+    cout << "|4.  Уникальные события                 |\n";
+    cout << "|5.  Кол-во с рейтингом > N             |\n";
+    cout << "|6.  Min/Max по метрике                 |\n";
+    cout << "|7.  Сумма рейтингов                    |\n";
+    cout << "|8.  Сортировка по 2 критериям          |\n";
+    cout << "|_______________________________________|\n";
+    cout << "|0.  Назад в главное меню               |\n";
     cout << "|_______________________________________|\n";
 }
 
@@ -189,6 +200,34 @@ void demoAddTraining(ChessClub& club) {
     cout << "Успешно добавлена тренировка: " << title << "\n";
 }
 
+void demoEnrollPlayerToTraining(ChessClub& club) {
+    club.printAllEvents();
+    int eventId = inputNumber<int>("Введите ID тренировки: ", 1, 100000);
+    auto event = club.findEventById(eventId);
+    auto training = dynamic_pointer_cast<TrainingSession>(event);
+
+    if (!training) {
+        cout << "Тренировка с таким ID не найдена.\n";
+        return;
+    }
+
+    club.printAllPlayers();
+    int playerId = inputNumber<int>("Введите ID игрока: ", 1, 100000);
+    auto player = club.findPlayerById(playerId);
+
+    if (!player) {
+        cout << "Игрок с таким ID не найден.\n";
+        return;
+    }
+
+    try {
+        *training += player;
+        cout << "Игрок " << player->getFullName() << " успешно записан на тренировку.\n";
+    } catch (const DuplicateIdException& e) {
+        cout << "Ошибка: этот игрок уже записан на данную тренировку.\n";
+    }
+}
+
 void demoCreateMatch(ChessClub& club) {
     club.printAllPlayers();
 
@@ -213,76 +252,6 @@ void demoCreateMatch(ChessClub& club) {
     cout << "Успешно создана партия.\n";
 }
 
-void demoFindPlayerByName(const ChessClub& club) {
-    string namePart = inputString("Часть имени для поиска: ");
-    auto found = club.findPlayerByName(namePart);
-    if (found) {
-        cout << "Найден: " << *found << "\n";
-    } else {
-        cout << "Игрок не найден.\n";
-    }
-}
-
-void demoGroupByRole(const ChessClub& club) {
-    auto groups = ClubAnalytics::groupPlayersByRole(club);
-    for (const auto& [role, list] : groups) {
-        cout << role << ": " << list.size() << " чел.\n";
-        for (const auto& p : list) {
-            cout << "    - " << p->getFullName() << '\n';
-        }
-    }
-}
-
-void demoTopNByMetric(const ChessClub& club) {
-    int n = inputNumber<int>("Сколько топ-игроков вывести: ", 1, 100);
-    auto top = ClubAnalytics::findTopNByMetric(club, static_cast<size_t>(n));
-    for (size_t i = 0; i < top.size(); ++i) {
-        cout << "  " << (i + 1) << ". " << top[i]->getFullName()
-             << " | Метрика: " << top[i]->calculateMetric()
-             << " (" << top[i]->getMetricName() << ")\n";
-    }
-}
-
-void demoUniqueEventTitles(const ChessClub& club) {
-    auto titles = ClubAnalytics::getUniqueEventTitles(club);
-    cout << "Уникальных названий событий: " << titles.size() << '\n';
-    for (const auto& t : titles) {
-        cout << "  - " << t << '\n';
-    }
-}
-
-void demoCountPlayersWithRatingAbove(const ChessClub& club) {
-    int minRating = inputNumber<int>("Минимальный рейтинг: ", 0, 3000);
-    size_t count = ClubAnalytics::countPlayersWithRatingAbove(club, minRating);
-    cout << "Участников с рейтингом > " << minRating << ": " << count << '\n';
-}
-
-void demoMinMaxMetric(const ChessClub& club) {
-    auto [minP, maxP] = ClubAnalytics::findMinMaxMetric(club);
-    if (minP) {
-        cout << "Min: " << minP->getFullName()
-             << " | Метрика: " << minP->calculateMetric() << '\n';
-    }
-    if (maxP) {
-        cout << "Max: " << maxP->getFullName()
-             << " | Метрика: " << maxP->calculateMetric() << '\n';
-    }
-}
-
-void demoSumRatings(const ChessClub& club) {
-    int total = ClubAnalytics::sumRatings(club);
-    cout << "Суммарный максимальный рейтинг всех участников: " << total << '\n';
-}
-
-void demoSortByTwoCriteria(const ChessClub& club) {
-    auto sorted = ClubAnalytics::sortByTwoCriteria(club);
-    for (const auto& p : sorted) {
-        cout << p->getFullName()
-             << " | Рейтинг: " << p->getRatings().getMax()
-             << " | Партий: " << p->getGamesPlayed() << '\n';
-    }
-}
-
 void demoSaveState(const string& filename, const string& logFilename, const ChessClub& club) {
     StorageManager::saveState(filename, club);
     StorageManager::logAction(logFilename, "Сохранение в " + filename);
@@ -300,6 +269,83 @@ void demoGenerateReport(const string& reportFilename, const string& logFilename,
     StorageManager::generateReport(reportFilename, club);
     StorageManager::logAction(logFilename, "Отчёт " + reportFilename);
     cout << "Отчёт сформирован в файле " << reportFilename << "\n";
+}
+
+void runAnalyticsMenu(const ChessClub& club) {
+    int choice = -1;
+    do {
+        printAnalyticsMenu();
+        try {
+            choice = inputNumber<int>("Выберите пункт аналитики: ", 0, 8);
+
+            switch (choice) {
+                case 1: {
+                    string namePart = inputString("Часть имени для поиска: ");
+                    auto found = club.findPlayerByName(namePart);
+                    if (found) cout << "Найден: " << *found << "\n";
+                    else cout << "Игрок не найден.\n";
+                    break;
+                }
+                case 2: {
+                    auto groups = ClubAnalytics::groupPlayersByRole(club);
+                    for (const auto& [role, list] : groups) {
+                        cout << role << ": " << list.size() << " чел.\n";
+                        for (const auto& p : list) cout << "    - " << p->getFullName() << '\n';
+                    }
+                    break;
+                }
+                case 3: {
+                    int n = inputNumber<int>("Сколько топ-игроков вывести: ", 1, 100);
+                    auto top = ClubAnalytics::findTopNByMetric(club, static_cast<size_t>(n));
+                    for (size_t i = 0; i < top.size(); ++i) {
+                        cout << "  " << (i + 1) << ". " << top[i]->getFullName()
+                             << " | Метрика: " << top[i]->calculateMetric() << "\n";
+                    }
+                    break;
+                }
+                case 4: {
+                    auto titles = ClubAnalytics::getUniqueEventTitles(club);
+                    cout << "Уникальных названий событий: " << titles.size() << '\n';
+                    for (const auto& t : titles) cout << "  - " << t << '\n';
+                    break;
+                }
+                case 5: {
+                    int minRating = inputNumber<int>("Минимальный рейтинг: ", 0, 3000);
+                    size_t count = ClubAnalytics::countPlayersWithRatingAbove(club, minRating);
+                    cout << "Участников с рейтингом > " << minRating << ": " << count << '\n';
+                    break;
+                }
+                case 6: {
+                    auto [minP, maxP] = ClubAnalytics::findMinMaxMetric(club);
+                    if (minP) cout << "Min: " << minP->getFullName() << " | Метрика: " << minP->calculateMetric() << '\n';
+                    if (maxP) cout << "Max: " << maxP->getFullName() << " | Метрика: " << maxP->calculateMetric() << '\n';
+                    break;
+                }
+                case 7: {
+                    int total = ClubAnalytics::sumRatings(club);
+                    cout << "Суммарный максимальный рейтинг всех участников: " << total << '\n';
+                    break;
+                }
+                case 8: {
+                    auto sorted = ClubAnalytics::sortByTwoCriteria(club);
+                    for (const auto& p : sorted) {
+                        cout << p->getFullName()
+                             << " | Рейтинг: " << p->getRatings().getMax()
+                             << " | Партий: " << p->getGamesPlayed() << '\n';
+                    }
+                    break;
+                }
+                case 0: break;
+                default: cout << "Неверный пункт.\n"; break;
+            }
+        } catch (const ChessException& e) {
+            cout << "ОШИБКА: " << e.what() << '\n';
+        }
+        if (choice != 0) {
+            cout << "\nНажмите Enter, чтобы продолжить...";
+            cin.get();
+        }
+    } while (choice != 0);
 }
 
 int main() {
@@ -339,9 +385,9 @@ int main() {
     int choice = -1;
 
     do {
-        printMenu();
+        printMainMenu();
         try {
-            choice = inputNumber<int>("Выберите пункт меню: ", 0, 19);
+            choice = inputNumber<int>("Выберите пункт меню: ", 0, 13);
 
             switch (choice) {
                 case 1:  club.printAllPlayers(); break;
@@ -351,23 +397,22 @@ int main() {
                 case 5:  demoAddCoach(club); break;
                 case 6:  demoAddTournament(club); break;
                 case 7:  demoAddTraining(club); break;
-                case 8:  demoCreateMatch(club); break;
-                case 9:  demoSaveState(filename, logFilename, club); break;
-                case 10: demoLoadState(filename, logFilename, club); break;
-                case 11: demoGenerateReport(reportFilename, logFilename, club); break;
-                case 12: demoFindPlayerByName(club); break;
-                case 13: demoGroupByRole(club); break;
-                case 14: demoTopNByMetric(club); break;
-                case 15: demoUniqueEventTitles(club); break;
-                case 16: demoCountPlayersWithRatingAbove(club); break;
-                case 17: demoMinMaxMetric(club); break;
-                case 18: demoSumRatings(club); break;
-                case 19: demoSortByTwoCriteria(club); break;
+                case 8:  demoEnrollPlayerToTraining(club); break;
+                case 9:  demoCreateMatch(club); break;
+                case 10: demoSaveState(filename, logFilename, club); break;
+                case 11: demoLoadState(filename, logFilename, club); break;
+                case 12: demoGenerateReport(reportFilename, logFilename, club); break;
+                case 13: runAnalyticsMenu(club); break;
                 case 0:  cout << "Выход.\n"; break;
                 default: cout << "Неверный пункт.\n"; break;
             }
         }
         catch (const ChessException& e) { cout << "ОШИБКА: " << e.what() << '\n'; }
+
+        if (choice != 0 && choice != 13) {
+            cout << "\nНажмите Enter, чтобы продолжить...";
+            cin.get();
+        }
 
     } while (choice != 0);
 

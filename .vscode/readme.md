@@ -1,0 +1,1 @@
+g++ -std=c++20 cppFolder/*.cpp -IhFolder -o chess.exe
