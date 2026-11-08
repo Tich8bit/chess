@@ -10,7 +10,7 @@ Coach::Coach(int id,
              int draws,
              int losses,
              int experienceYears,
-             std::string_view specialization,
+             const Specialization& specialization,
              int qualificationLevel)
     : Player(id, firstName, lastName, middleName, ratings, wins, draws, losses),
       _experienceYears(experienceYears),
@@ -25,7 +25,7 @@ Coach::Coach(int id,
 }
 
 int Coach::getExperienceYears() const { return _experienceYears; }
-std::string_view Coach::getSpecialization() const { return _specialization; }
+const Specialization& Coach::getSpecialization() const { return _specialization; }
 int Coach::getQualificationLevel() const { return _qualificationLevel; }
 
 void Coach::setExperienceYears(int newExperienceYears) {
@@ -35,7 +35,7 @@ void Coach::setExperienceYears(int newExperienceYears) {
     _experienceYears = newExperienceYears;
 }
 
-void Coach::setSpecialization(std::string_view newSpecialization) {
+void Coach::setSpecialization(const Specialization& newSpecialization) {
     _specialization = newSpecialization;
 }
 

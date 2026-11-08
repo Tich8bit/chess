@@ -1,6 +1,7 @@
 #pragma once
 
 #include "player.h"
+#include "specialization.h"
 
 class Coach : public Player {
 public:
@@ -13,15 +14,15 @@ public:
           int draws,
           int losses,
           int experienceYears,
-          std::string_view specialization,
+          const Specialization& specialization,
           int qualificationLevel);
 
     int getExperienceYears() const;
-    std::string_view getSpecialization() const;
+    const Specialization& getSpecialization() const;
     int getQualificationLevel() const;
 
     void setExperienceYears(int newExperienceYears);
-    void setSpecialization(std::string_view newSpecialization);
+    void setSpecialization(const Specialization& newSpecialization);
     void setQualificationLevel(int newQualificationLevel);
 
     std::string getRole() const override;
@@ -31,6 +32,6 @@ public:
 
 private:
     int _experienceYears;
-    std::string _specialization;
+    Specialization _specialization;
     int _qualificationLevel;
 };

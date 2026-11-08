@@ -13,8 +13,10 @@
 #include "ratings.h"
 #include "player.h"
 #include "coach.h"
+#include "specialization.h"
 #include "tournament.h"
 #include "trainingSession.h"
+#include "matchResult.h"
 #include "match.h"
 #include "chessClub.h"
 #include "collection.h"
@@ -93,7 +95,8 @@ void createTestClub(ChessClub& club) {
     auto p2 = make_shared<Player>(2, "Пётр", "Петров", "Петрович",
         Ratings(1800, 1750, 1700), 10, 4, 6);
     auto c1 = make_shared<Coach>(3, "Тимофей", "Тренеров", "Тимофеевич",
-        Ratings(2000, 1950, 1900), 15, 5, 10, 25, "Дебюты", 4);
+        Ratings(2000, 1950, 1900), 15, 5, 10, 25, 
+        Specialization(Specialization::Type::Openings), 4);
 
     club += p1;
     club += p2;
@@ -149,8 +152,13 @@ void demoAddCoach(ChessClub& club) {
     int draws     = inputNumber<int>("Ничьи: ", 0, 10000);
     int losses    = inputNumber<int>("Поражения: ", 0, 10000);
     int exp       = inputNumber<int>("Стаж (лет): ", 0, 80);
-    string spec   = inputString("Специализация: ");
-    int qual      = inputNumber<int>("Квалификация (1-5): ", 1, 5);
+    
+    cout << "Выберите специализацию:\n";
+    cout << "1. Дебюты\n2. Миттельшпиль\n3. Эндшпиль\n4. Тактика\n5. Общая подготовка\n";
+    int specChoice = inputNumber<int>("Ваш выбор: ", 1, 5);
+    Specialization spec(Specialization::intToType(specChoice));
+
+    int qual = inputNumber<int>("Квалификация (1-5): ", 1, 5);
 
     auto coach = make_shared<Coach>(id, firstName, lastName, middleName,
         Ratings(classical, rapid, blitz), wins, draws, losses,

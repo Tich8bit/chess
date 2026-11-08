@@ -1,8 +1,10 @@
 #include "files.h"
 #include "player.h"
 #include "coach.h"
+#include "specialization.h"
 #include "tournament.h"
 #include "trainingSession.h"
+#include "matchResult.h"
 #include "exceptions/exception.h"
 #include <iostream>
 #include <sstream>
@@ -32,7 +34,7 @@ void StorageManager::savePlayers(std::ofstream& ofs, const ChessClub& club) {
         auto middleName = std::string(p->getMiddleName());
 
         if (auto coach = std::dynamic_pointer_cast<Coach>(p)) {
-            auto specialization = std::string(coach->getSpecialization());
+            int specInt = static_cast<int>(coach->getSpecialization().getType());
             ofs << PREFIX_COACH << " " << coach->getId() << " "
                 << std::quoted(lastName) << " "
                 << std::quoted(firstName) << " "
@@ -42,7 +44,7 @@ void StorageManager::savePlayers(std::ofstream& ofs, const ChessClub& club) {
                 << p->getRatings().getBlitz() << " "
                 << p->getWins() << " " << p->getDraws() << " " << p->getLosses() << " "
                 << coach->getExperienceYears() << " "
-                << std::quoted(specialization) << " "
+                << specInt << " "
                 << coach->getQualificationLevel() << "\n";
         } else {
             ofs << PREFIX_PLAYER << " " << p->getId() << " "
@@ -96,7 +98,7 @@ void StorageManager::saveMatches(std::ofstream& ofs, const ChessClub& club) {
             << m->getWhitePlayer()->getId() << " "
             << m->getBlackPlayer()->getId() << " "
             << std::quoted(date) << " "
-            << static_cast<int>(m->getResult()) << "\n";
+            << static_cast<int>(m->getResult().getResult()) << "\n";
     }
 }
 
@@ -169,7 +171,7 @@ void StorageManager::loadCoach(std::ifstream& ifs, ChessClub& club) {
     int classical, rapid, blitz;
     int wins, draws, losses;
     int experienceYears;
-    std::string specialization;
+    int specInt;
     int qualificationLevel;
 
     if (!(ifs >> id
@@ -179,14 +181,16 @@ void StorageManager::loadCoach(std::ifstream& ifs, ChessClub& club) {
                >> classical >> rapid >> blitz
                >> wins >> draws >> losses
                >> experienceYears
-               >> std::quoted(specialization)
+               >> specInt
                >> qualificationLevel)) {
         throw InvalidDataException("ошибка чтения данных тренера");
     }
 
+    Specialization spec(static_cast<Specialization::Type>(specInt));
+
     auto coach = std::make_shared<Coach>(id, firstName, lastName, middleName,
         Ratings(classical, rapid, blitz), wins, draws, losses,
-        experienceYears, specialization, qualificationLevel);
+        experienceYears, spec, qualificationLevel);
     club.addPlayer(coach);
 }
 
@@ -240,9 +244,9 @@ void StorageManager::loadMatch(std::ifstream& ifs, ChessClub& club) {
     int id;
     int whiteId, blackId;
     std::string date;
-    int result;
+    int resultInt;
 
-    if (!(ifs >> prefix >> id >> whiteId >> blackId >> std::quoted(date) >> result)) {
+    if (!(ifs >> prefix >> id >> whiteId >> blackId >> std::quoted(date) >> resultInt)) {
         throw InvalidDataException("ошибка чтения параметров партии");
     }
     if (prefix != PREFIX_MATCH) {
@@ -260,7 +264,7 @@ void StorageManager::loadMatch(std::ifstream& ifs, ChessClub& club) {
     }
 
     auto match = std::make_shared<Match>(id, white, black, date);
-    match->setResult(static_cast<Match::Result>(result));
+    match->setResult(static_cast<MatchResult::Result>(resultInt));
     club.addMatch(match);
 }
 

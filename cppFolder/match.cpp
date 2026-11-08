@@ -11,7 +11,7 @@ Match::Match(int id,
       _whitePlayer(whitePlayer),
       _blackPlayer(blackPlayer),
       _date(date),
-      _result(Result::NotPlayed) {
+      _result(MatchResult::Result::NotPlayed) {
     if (id <= 0) {
         throw InvalidDataException("ID должен быть положительным числом");
     }
@@ -30,7 +30,7 @@ int Match::getId() const { return _id; }
 std::shared_ptr<Player> Match::getWhitePlayer() const { return _whitePlayer; }
 std::shared_ptr<Player> Match::getBlackPlayer() const { return _blackPlayer; }
 std::string_view Match::getDate() const { return _date; }
-Match::Result Match::getResult() const { return _result; }
+MatchResult Match::getResult() const { return _result; }
 std::shared_ptr<Tournament> Match::getTournament() const { return _tournament.lock(); }
 
 void Match::setDate(std::string_view newDate) {
@@ -40,13 +40,13 @@ void Match::setDate(std::string_view newDate) {
     _date = newDate;
 }
 
-void Match::setResult(Result newResult) { _result = newResult; }
+void Match::setResult(MatchResult::Result newResult) { _result.setResult(newResult); }
 
-void Match::play(Result newResult) {
-    if (newResult == Result::NotPlayed) {
+void Match::play(MatchResult::Result newResult) {
+    if (newResult == MatchResult::Result::NotPlayed) {
         throw InvalidOperationException("нельзя записать результат 'не сыграна'");
     }
-    _result = newResult;
+    _result.setResult(newResult);
 }
 
 void Match::setTournament(std::shared_ptr<Tournament> newTournament) {
@@ -54,7 +54,7 @@ void Match::setTournament(std::shared_ptr<Tournament> newTournament) {
 }
 
 double Match::calculateMetric() const {
-    return _result == Result::NotPlayed ? 0.0 : 1.0;
+    return _result.isPlayed() ? 1.0 : 0.0;
 }
 
 bool operator==(const Match& a, const Match& b) {
@@ -66,12 +66,6 @@ bool operator==(const Match& a, const Match& b) {
 std::ostream& operator<<(std::ostream& os, const Match& m) {
     os << "Дата: " << m._date
        << " | " << m._whitePlayer->getFullName() << " (белые) vs "
-       << m._blackPlayer->getFullName() << " (чёрные) | Результат: ";
-    switch (m._result) {
-        case Match::Result::NotPlayed: os << "не сыграна"; break;
-        case Match::Result::Draw:      os << "ничья"; break;
-        case Match::Result::WhiteWin:  os << "победа белых"; break;
-        case Match::Result::BlackWin:  os << "победа чёрных"; break;
-    }
+       << m._blackPlayer->getFullName() << " (чёрные) | Результат: " << m._result;
     return os;
 }
