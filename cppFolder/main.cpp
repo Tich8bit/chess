@@ -1,6 +1,11 @@
 #include <iostream>
 #include <memory>
+#include <vector>
+#include <map>
+#include <set>
 #include <locale>
+#include <algorithm>
+#include <numeric>
 #include <Windows.h>
 
 #include "basefunction.h"
@@ -19,6 +24,25 @@
 #include "exceptions/exception.h"
 
 using namespace std;
+
+int chooseStartMode() {
+    cout << "_________________________________________\n";
+    cout << "|         Выберите режим запуска        |\n";
+    cout << "|_______________________________________|\n";
+    cout << "|1. Создать тестовую систему            |\n";
+    cout << "|2. Загрузить систему из файла          |\n";
+    cout << "|0. Выход                               |\n";
+    cout << "|_______________________________________|\n";
+
+    int choice = -1;
+    while (choice < 0 || choice > 2) {
+        choice = inputNumber<int>("Ваш выбор: ", 0, 2);
+        if (choice < 0 || choice > 2) {
+            cout << "Неверный пункт. Попробуйте снова.\n";
+        }
+    }
+    return choice;
+}
 
 void printMenu() {
     cout << "_________________________________________\n";
@@ -46,35 +70,37 @@ void printMenu() {
     cout << "|18. Сумма рейтингов                    |\n";
     cout << "|19. Сортировка по 2 критериям          |\n";
     cout << "|_______________________________________|\n";
-    cout << "|0. Выход                               |\n";
+    cout << "|0.  Выход                              |\n";
     cout << "|_______________________________________|\n";
 }
 
 void createTestClub(ChessClub& club) {
-    auto p1 = make_shared<Player>("Иван", "Иванов", "Иванович",
+    club = ChessClub("Шахматный клуб \"Гамбит\"");
+
+    auto p1 = make_shared<Player>(1, "Иван", "Иванов", "Иванович",
         Ratings(1200, 1250, 1300), 5, 2, 3);
-    auto p2 = make_shared<Player>("Пётр", "Петров", "Петрович",
+    auto p2 = make_shared<Player>(2, "Пётр", "Петров", "Петрович",
         Ratings(1800, 1750, 1700), 10, 4, 6);
-    auto c1 = make_shared<Coach>("Тимофей", "Тренеров", "Тимофеевич",
+    auto c1 = make_shared<Coach>(3, "Тимофей", "Тренеров", "Тимофеевич",
         Ratings(2000, 1950, 1900), 15, 5, 10, 25, "Дебюты", 4);
 
     club += p1;
     club += p2;
     club += c1;
 
-    auto t1 = make_shared<Tournament>("Чемпионат клуба", 9,
+    auto t1 = make_shared<Tournament>(1, "Чемпионат клуба", 9,
         Tournament::TimeControl::Classic,
         Tournament::TournamentSystem::RoundRobin, 12);
     *t1 += p1;
     *t1 += p2;
     club += t1;
 
-    auto training = make_shared<TrainingSession>("Дебютная подготовка",
+    auto training = make_shared<TrainingSession>(2, "Дебютная подготовка",
         "Испанская партия", 90, c1);
     *training += p1;
     club += training;
 
-    club.createMatch(p1, p2, "01.11.2026");
+    club.createMatch(1, p1, p2, "01.11.2026");
 
     cout << "Тестовая система создана:\n";
     cout << "  Игроков: " << club.getPlayerCount() << '\n';
@@ -83,6 +109,7 @@ void createTestClub(ChessClub& club) {
 }
 
 void demoAddPlayer(ChessClub& club) {
+    int id = inputNumber<int>("ID игрока: ", 1, 100000);
     string firstName  = inputString("Имя: ");
     string lastName   = inputString("Фамилия: ");
     string middleName = inputString("Отчество: ");
@@ -93,13 +120,14 @@ void demoAddPlayer(ChessClub& club) {
     int draws     = inputNumber<int>("Ничьи: ", 0, 10000);
     int losses    = inputNumber<int>("Поражения: ", 0, 10000);
 
-    auto player = make_shared<Player>(firstName, lastName, middleName,
+    auto player = make_shared<Player>(id, firstName, lastName, middleName,
         Ratings(classical, rapid, blitz), wins, draws, losses);
     club += player;
     cout << "Успешно добавлен игрок: " << player->getFullName() << "\n";
 }
 
 void demoAddCoach(ChessClub& club) {
+    int id = inputNumber<int>("ID тренера: ", 1, 100000);
     string firstName  = inputString("Имя: ");
     string lastName   = inputString("Фамилия: ");
     string middleName = inputString("Отчество: ");
@@ -113,7 +141,7 @@ void demoAddCoach(ChessClub& club) {
     string spec   = inputString("Специализация: ");
     int qual      = inputNumber<int>("Квалификация (1-5): ", 1, 5);
 
-    auto coach = make_shared<Coach>(firstName, lastName, middleName,
+    auto coach = make_shared<Coach>(id, firstName, lastName, middleName,
         Ratings(classical, rapid, blitz), wins, draws, losses,
         exp, spec, qual);
     club += coach;
@@ -121,13 +149,14 @@ void demoAddCoach(ChessClub& club) {
 }
 
 void demoAddTournament(ChessClub& club) {
+    int id = inputNumber<int>("ID турнира: ", 1, 100000);
     string title = inputString("Название турнира: ");
     int rounds = inputNumber<int>("Туров: ", 1, 30);
     int tc = inputNumber<int>("Контроль (0-Блиц,1-Рапид,2-Классика): ", 0, 2);
     int sys = inputNumber<int>("Система (0-Круговая,1-Швейцарская): ", 0, 1);
     int maxP = inputNumber<int>("Макс. участников: ", 2, 200);
 
-    auto tournament = make_shared<Tournament>(title, rounds,
+    auto tournament = make_shared<Tournament>(id, title, rounds,
         static_cast<Tournament::TimeControl>(tc),
         static_cast<Tournament::TournamentSystem>(sys), maxP);
     club += tournament;
@@ -135,6 +164,7 @@ void demoAddTournament(ChessClub& club) {
 }
 
 void demoAddTraining(ChessClub& club) {
+    int id = inputNumber<int>("ID тренировки: ", 1, 100000);
     string title  = inputString("Название тренировки: ");
     string topic  = inputString("Тема: ");
     int duration  = inputNumber<int>("Длительность (мин): ", 10, 300);
@@ -154,7 +184,7 @@ void demoAddTraining(ChessClub& club) {
         }
     }
 
-    auto training = make_shared<TrainingSession>(title, topic, duration, coach);
+    auto training = make_shared<TrainingSession>(id, title, topic, duration, coach);
     club += training;
     cout << "Успешно добавлена тренировка: " << title << "\n";
 }
@@ -162,6 +192,7 @@ void demoAddTraining(ChessClub& club) {
 void demoCreateMatch(ChessClub& club) {
     club.printAllPlayers();
 
+    int id = inputNumber<int>("ID партии: ", 1, 100000);
     int whiteId = inputNumber<int>("ID белого игрока: ", 1, 100000);
     int blackId = inputNumber<int>("ID чёрного игрока: ", 1, 100000);
     string date = inputString("Дата (дд.мм.гггг): ");
@@ -178,7 +209,7 @@ void demoCreateMatch(ChessClub& club) {
         return;
     }
 
-    club.createMatch(white, black, date);
+    club.createMatch(id, white, black, date);
     cout << "Успешно создана партия.\n";
 }
 
@@ -259,6 +290,7 @@ void demoSaveState(const string& filename, const string& logFilename, const Ches
 }
 
 void demoLoadState(const string& filename, const string& logFilename, ChessClub& club) {
+    club = ChessClub("Шахматный клуб \"Гамбит\"");
     StorageManager::loadState(filename, club);
     StorageManager::logAction(logFilename, "Загрузка из " + filename);
     cout << "Клуб загружен из файла " << filename << "\n";
@@ -280,7 +312,29 @@ int main() {
     string logFilename    = "journal.log";
 
     ChessClub club("Шахматный клуб \"Гамбит\"");
-    createTestClub(club);
+
+    int startMode = chooseStartMode();
+    if (startMode == 0) return 0;
+
+    if (startMode == 1) {
+        try {
+            createTestClub(club);
+        } catch (const ChessException& e) {
+            cout << "ОШИБКА при создании тестовой системы: " << e.what() << '\n';
+        }
+    } else {
+        try {
+            StorageManager::loadState(filename, club);
+            cout << "Клуб загружен из " << filename << "\n";
+        } catch (const ChessException& e) {
+            cout << "ОШИБКА загрузки: " << e.what() << "\nБудет создана тестовая система.\n";
+            try {
+                createTestClub(club);
+            } catch (const ChessException& ex) {
+                cout << "ОШИБКА при создании тестовой системы: " << ex.what() << '\n';
+            }
+        }
+    }
 
     int choice = -1;
 

@@ -4,7 +4,8 @@
 
 class Coach : public Player {
 public:
-    Coach(std::string_view firstName,
+    Coach(int id,
+          std::string_view firstName,
           std::string_view lastName,
           std::string_view middleName,
           const Ratings& ratings,

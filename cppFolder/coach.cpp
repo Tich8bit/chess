@@ -1,7 +1,8 @@
 #include "coach.h"
 #include "exceptions/exception.h"
 
-Coach::Coach(std::string_view firstName,
+Coach::Coach(int id,
+             std::string_view firstName,
              std::string_view lastName,
              std::string_view middleName,
              const Ratings& ratings,
@@ -11,7 +12,7 @@ Coach::Coach(std::string_view firstName,
              int experienceYears,
              std::string_view specialization,
              int qualificationLevel)
-    : Player(firstName, lastName, middleName, ratings, wins, draws, losses),
+    : Player(id, firstName, lastName, middleName, ratings, wins, draws, losses),
       _experienceYears(experienceYears),
       _specialization(specialization),
       _qualificationLevel(qualificationLevel) {

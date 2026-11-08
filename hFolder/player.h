@@ -7,7 +7,8 @@
 
 class Player {
 public:
-    Player(std::string_view firstName,
+    Player(int id,
+           std::string_view firstName,
            std::string_view lastName,
            std::string_view middleName,
            const Ratings& ratings,
@@ -29,7 +30,6 @@ public:
     int getGamesPlayed() const;
     double getScore() const;
 
-    void setId(int newId);
     void setFirstName(std::string_view newFirstName);
     void setLastName(std::string_view newLastName);
     void setMiddleName(std::string_view newMiddleName);

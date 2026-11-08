@@ -13,7 +13,8 @@ class Match {
 public:
     enum class Result { NotPlayed = -1, Draw = 0, WhiteWin = 1, BlackWin = 2 };
 
-    Match(std::shared_ptr<Player> whitePlayer,
+    Match(int id,
+          std::shared_ptr<Player> whitePlayer,
           std::shared_ptr<Player> blackPlayer,
           std::string_view date);
 
@@ -24,7 +25,6 @@ public:
     Result getResult() const;
     std::shared_ptr<Tournament> getTournament() const;
 
-    void setId(int newId);
     void setDate(std::string_view newDate);
     void setResult(Result newResult);
     void play(Result newResult);

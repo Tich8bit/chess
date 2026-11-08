@@ -2,10 +2,7 @@
 #include "exceptions/exception.h"
 
 ChessClub::ChessClub(std::string_view name)
-    : _clubName(name),
-      _nextPlayerId(1),
-      _nextEventId(1),
-      _nextMatchId(1) {
+    : _clubName(name) {
     if (name.empty()) {
         throw InvalidDataException("название клуба не может быть пустым");
     }
@@ -24,19 +21,12 @@ void ChessClub::addPlayer(std::shared_ptr<Player> player) {
     if (!player) {
         throw InvalidDataException("пустой указатель на игрока");
     }
-    player->setId(_nextPlayerId++);
-    _players.add(player);
-}
-
-void ChessClub::addPlayerWithId(std::shared_ptr<Player> player, int id) {
-    if (!player) {
-        throw InvalidDataException("пустой указатель на игрока");
+    if (auto existing = _players.find([&player](const std::shared_ptr<Player>& p) {
+        return p->getId() == player->getId();
+    })) {
+        throw DuplicateIdException("Участник с ID " + std::to_string(player->getId()) + " уже существует");
     }
-    player->setId(id);
     _players.add(player);
-    if (id >= _nextPlayerId) {
-        _nextPlayerId = id + 1;
-    }
 }
 
 bool ChessClub::removePlayer(std::shared_ptr<Player> player) {
@@ -55,19 +45,12 @@ void ChessClub::addEvent(std::shared_ptr<Event> event) {
     if (!event) {
         throw InvalidDataException("пустой указатель на событие");
     }
-    event->setId(_nextEventId++);
-    _events.add(event);
-}
-
-void ChessClub::addEventWithId(std::shared_ptr<Event> event, int id) {
-    if (!event) {
-        throw InvalidDataException("пустой указатель на событие");
+    if (auto existing = _events.find([&event](const std::shared_ptr<Event>& e) {
+        return e->getId() == event->getId();
+    })) {
+        throw DuplicateIdException("Событие с ID " + std::to_string(event->getId()) + " уже существует");
     }
-    event->setId(id);
     _events.add(event);
-    if (id >= _nextEventId) {
-        _nextEventId = id + 1;
-    }
 }
 
 bool ChessClub::removeEvent(std::shared_ptr<Event> event) {
@@ -86,19 +69,12 @@ void ChessClub::addMatch(std::shared_ptr<Match> match) {
     if (!match) {
         throw InvalidDataException("пустой указатель на партию");
     }
-    match->setId(_nextMatchId++);
-    _matches.add(match);
-}
-
-void ChessClub::addMatchWithId(std::shared_ptr<Match> match, int id) {
-    if (!match) {
-        throw InvalidDataException("пустой указатель на партию");
+    if (auto existing = _matches.find([&match](const std::shared_ptr<Match>& m) {
+        return m->getId() == match->getId();
+    })) {
+        throw DuplicateIdException("Партия с ID " + std::to_string(match->getId()) + " уже существует");
     }
-    match->setId(id);
     _matches.add(match);
-    if (id >= _nextMatchId) {
-        _nextMatchId = id + 1;
-    }
 }
 
 bool ChessClub::removeMatch(std::shared_ptr<Match> match) {
@@ -131,10 +107,11 @@ std::shared_ptr<Event> ChessClub::findEventById(int id) const {
     });
 }
 
-void ChessClub::createMatch(std::shared_ptr<Player> white,
+void ChessClub::createMatch(int id,
+                            std::shared_ptr<Player> white,
                             std::shared_ptr<Player> black,
                             std::string_view date) {
-    auto match = std::make_shared<Match>(white, black, date);
+    auto match = std::make_shared<Match>(id, white, black, date);
     addMatch(match);
 }
 

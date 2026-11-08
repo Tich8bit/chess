@@ -3,14 +3,18 @@
 #include "tournament.h"
 #include "exceptions/exception.h"
 
-Match::Match(std::shared_ptr<Player> whitePlayer,
+Match::Match(int id,
+             std::shared_ptr<Player> whitePlayer,
              std::shared_ptr<Player> blackPlayer,
              std::string_view date)
-    : _id(-1),
+    : _id(id),
       _whitePlayer(whitePlayer),
       _blackPlayer(blackPlayer),
       _date(date),
       _result(Result::NotPlayed) {
+    if (id <= 0) {
+        throw InvalidDataException("ID должен быть положительным числом");
+    }
     if (!whitePlayer || !blackPlayer) {
         throw InvalidDataException("игроки не могут быть пустыми");
     }
@@ -28,8 +32,6 @@ std::shared_ptr<Player> Match::getBlackPlayer() const { return _blackPlayer; }
 std::string_view Match::getDate() const { return _date; }
 Match::Result Match::getResult() const { return _result; }
 std::shared_ptr<Tournament> Match::getTournament() const { return _tournament.lock(); }
-
-void Match::setId(int newId) { _id = newId; }
 
 void Match::setDate(std::string_view newDate) {
     if (newDate.empty()) {

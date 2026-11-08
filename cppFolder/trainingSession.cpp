@@ -2,11 +2,12 @@
 #include "player.h"
 #include "exceptions/exception.h"
 
-TrainingSession::TrainingSession(std::string_view title,
+TrainingSession::TrainingSession(int id,
+                                 std::string_view title,
                                  std::string_view topic,
                                  int durationMinutes,
                                  std::shared_ptr<Coach> coach)
-    : Event(title),
+    : Event(id, title),
       _topic(topic),
       _durationMinutes(durationMinutes),
       _coach(coach) {

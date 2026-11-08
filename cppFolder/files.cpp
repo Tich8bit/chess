@@ -158,9 +158,9 @@ void StorageManager::loadPlayer(std::ifstream& ifs, ChessClub& club) {
         throw InvalidDataException("ошибка чтения данных игрока");
     }
 
-    auto player = std::make_shared<Player>(firstName, lastName, middleName,
+    auto player = std::make_shared<Player>(id, firstName, lastName, middleName,
         Ratings(classical, rapid, blitz), wins, draws, losses);
-    club.addPlayerWithId(player, id);
+    club.addPlayer(player);
 }
 
 void StorageManager::loadCoach(std::ifstream& ifs, ChessClub& club) {
@@ -184,10 +184,10 @@ void StorageManager::loadCoach(std::ifstream& ifs, ChessClub& club) {
         throw InvalidDataException("ошибка чтения данных тренера");
     }
 
-    auto coach = std::make_shared<Coach>(firstName, lastName, middleName,
+    auto coach = std::make_shared<Coach>(id, firstName, lastName, middleName,
         Ratings(classical, rapid, blitz), wins, draws, losses,
         experienceYears, specialization, qualificationLevel);
-    club.addPlayerWithId(coach, id);
+    club.addPlayer(coach);
 }
 
 void StorageManager::loadTournament(std::ifstream& ifs, ChessClub& club) {
@@ -202,11 +202,11 @@ void StorageManager::loadTournament(std::ifstream& ifs, ChessClub& club) {
         throw InvalidDataException("ошибка чтения параметров турнира");
     }
 
-    auto tournament = std::make_shared<Tournament>(title, roundsCount,
+    auto tournament = std::make_shared<Tournament>(id, title, roundsCount,
         static_cast<Tournament::TimeControl>(timeControl),
         static_cast<Tournament::TournamentSystem>(system),
         maxPlayers);
-    club.addEventWithId(tournament, id);
+    club.addEvent(tournament);
 }
 
 void StorageManager::loadTraining(std::ifstream& ifs, ChessClub& club) {
@@ -231,8 +231,8 @@ void StorageManager::loadTraining(std::ifstream& ifs, ChessClub& club) {
         }
     }
 
-    auto training = std::make_shared<TrainingSession>(title, topic, durationMinutes, coach);
-    club.addEventWithId(training, id);
+    auto training = std::make_shared<TrainingSession>(id, title, topic, durationMinutes, coach);
+    club.addEvent(training);
 }
 
 void StorageManager::loadMatch(std::ifstream& ifs, ChessClub& club) {
@@ -259,9 +259,9 @@ void StorageManager::loadMatch(std::ifstream& ifs, ChessClub& club) {
         throw RelationException("партия ссылается на несуществующего игрока ID=" + std::to_string(blackId));
     }
 
-    auto match = std::make_shared<Match>(white, black, date);
+    auto match = std::make_shared<Match>(id, white, black, date);
     match->setResult(static_cast<Match::Result>(result));
-    club.addMatchWithId(match, id);
+    club.addMatch(match);
 }
 
 void StorageManager::generateReport(const std::string& reportFilename, const ChessClub& club) {
@@ -282,6 +282,7 @@ void StorageManager::reportPlayers(std::ofstream& ofs, const Collection<Player>&
     ofs << "УЧАСТНИКИ (" << players.size() << "):\n";
     for (const auto& p : players) {
         ofs << "  - [" << p->getRole() << "] " << p->getFullName()
+            << " | ID: " << p->getId()
             << " | Метрика: " << p->calculateMetric()
             << " (" << p->getMetricName() << ")\n";
     }
@@ -292,6 +293,7 @@ void StorageManager::reportEvents(std::ofstream& ofs, const Collection<Event>& e
     ofs << "СОБЫТИЯ (" << events.size() << "):\n";
     for (const auto& e : events) {
         ofs << "  - [" << e->getType() << "] " << e->getTitle()
+            << " | ID: " << e->getId()
             << " | Метрика: " << e->calculateMetric()
             << " (" << e->getMetricName() << ")\n";
     }

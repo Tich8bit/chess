@@ -2,12 +2,13 @@
 #include "player.h"
 #include "exceptions/exception.h"
 
-Tournament::Tournament(std::string_view title,
+Tournament::Tournament(int id,
+                       std::string_view title,
                        int roundsCount,
                        TimeControl timeControl,
                        TournamentSystem system,
                        int maxPlayers)
-    : Event(title),
+    : Event(id, title),
       _roundsCount(roundsCount),
       _timeControl(timeControl),
       _system(system),

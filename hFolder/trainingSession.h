@@ -8,7 +8,8 @@ class Player;
 
 class TrainingSession : public Event {
 public:
-    TrainingSession(std::string_view title,
+    TrainingSession(int id,
+                    std::string_view title,
                     std::string_view topic,
                     int durationMinutes,
                     std::shared_ptr<Coach> coach);

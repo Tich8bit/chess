@@ -6,13 +6,12 @@
 
 class Event {
 public:
-    Event(std::string_view title);
+    Event(int id, std::string_view title);
     virtual ~Event() = default;
 
     int getId() const;
     std::string_view getTitle() const;
 
-    void setId(int newId);
     void setTitle(std::string_view newTitle);
 
     virtual std::string getType() const;

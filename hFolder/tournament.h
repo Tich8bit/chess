@@ -10,7 +10,8 @@ public:
     enum class TimeControl { Blitz, Rapid, Classic };
     enum class TournamentSystem { RoundRobin, Swiss };
 
-    Tournament(std::string_view title,
+    Tournament(int id,
+               std::string_view title,
                int roundsCount,
                TimeControl timeControl,
                TournamentSystem system,

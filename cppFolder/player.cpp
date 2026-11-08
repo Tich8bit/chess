@@ -1,14 +1,15 @@
 #include "player.h"
 #include "exceptions/exception.h"
 
-Player::Player(std::string_view firstName,
+Player::Player(int id,
+               std::string_view firstName,
                std::string_view lastName,
                std::string_view middleName,
                const Ratings& ratings,
                int wins,
                int draws,
                int losses)
-    : _id(-1),
+    : _id(id),
       _firstName(firstName),
       _lastName(lastName),
       _middleName(middleName),
@@ -16,6 +17,9 @@ Player::Player(std::string_view firstName,
       _wins(wins),
       _draws(draws),
       _losses(losses) {
+    if (id <= 0) {
+        throw InvalidDataException("ID должен быть положительным числом");
+    }
     if (firstName.empty()) {
         throw InvalidDataException("имя не может быть пустым");
     }
@@ -56,8 +60,6 @@ double Player::getScore() const {
     if (games == 0) return 0.0;
     return (_wins + 0.5 * _draws) / games;
 }
-
-void Player::setId(int newId) { _id = newId; }
 
 void Player::setFirstName(std::string_view newFirstName) {
     if (newFirstName.empty()) {
