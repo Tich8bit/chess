@@ -1,27 +1,35 @@
 #pragma once
 
-#include "member.h"
+#include "player.h"
 
-class Coach : public Member {
+class Coach : public Player {
 public:
-    Coach(int id, std::string_view fullName, int birthYear,
-          int experienceYears, int studentsCount, std::string_view specialization);
+    Coach(std::string_view firstName,
+          std::string_view lastName,
+          std::string_view middleName,
+          const Ratings& ratings,
+          int wins,
+          int draws,
+          int losses,
+          int experienceYears,
+          std::string_view specialization,
+          int qualificationLevel);
 
     int getExperienceYears() const;
-    int getStudentsCount() const;
     std::string_view getSpecialization() const;
+    int getQualificationLevel() const;
 
     void setExperienceYears(int newExperienceYears);
-    void setStudentsCount(int newStudentsCount);
     void setSpecialization(std::string_view newSpecialization);
+    void setQualificationLevel(int newQualificationLevel);
 
-    std::string_view getRole() const override;
+    std::string getRole() const override;
     double calculateMetric() const override;
-    std::string_view getMetricName() const override;
-    void printMemberInformation() const override;
+    std::string getMetricName() const override;
+    void printInfo(std::ostream& os) const override;
 
 private:
     int _experienceYears;
-    int _studentsCount;
     std::string _specialization;
+    int _qualificationLevel;
 };

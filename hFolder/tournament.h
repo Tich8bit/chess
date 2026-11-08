@@ -1,39 +1,47 @@
 #pragma once
 
 #include "event.h"
+#include "collection.h"
+
+class Player;
 
 class Tournament : public Event {
 public:
     enum class TimeControl { Blitz, Rapid, Classic };
-    enum class System { RoundRobin, Swiss };
+    enum class TournamentSystem { RoundRobin, Swiss };
 
-    Tournament(int id, std::string_view title,
+    Tournament(std::string_view title,
                int roundsCount,
                TimeControl timeControl,
-               System system,
-               int playerCount);
+               TournamentSystem system,
+               int maxPlayers);
 
     int getRoundsCount() const;
     TimeControl getTimeControl() const;
-    System getSystem() const;
-    int getPlayerCount() const;
+    TournamentSystem getSystem() const;
+    int getMaxPlayers() const;
+    const Collection<Player>& getPlayers() const;
 
     void setRoundsCount(int newRoundsCount);
     void setTimeControl(TimeControl newTimeControl);
-    void setSystem(System newSystem);
-    void setPlayerCount(int newPlayerCount);
+    void setSystem(TournamentSystem newSystem);
+    void setMaxPlayers(int newMaxPlayers);
 
-    std::string_view getType() const override;
+    std::string getType() const override;
     double calculateMetric() const override;
-    std::string_view getMetricName() const override;
-    void printEventInformation() const override;
+    std::string getMetricName() const override;
+    void printInfo(std::ostream& os) const override;
 
-    static std::string_view timeControlToString(TimeControl tc);
-    static std::string_view systemToString(System sys);
+    Tournament& operator+=(std::shared_ptr<Player> player);
+    Tournament& operator-=(std::shared_ptr<Player> player);
+
+    static std::string timeControlToString(TimeControl tc);
+    static std::string systemToString(TournamentSystem sys);
 
 private:
     int _roundsCount;
     TimeControl _timeControl;
-    System _system;
-    int _playerCount;
+    TournamentSystem _system;
+    int _maxPlayers;
+    Collection<Player> _players;
 };

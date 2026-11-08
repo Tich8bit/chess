@@ -1,27 +1,38 @@
 #include "event.h"
 #include "exceptions/exception.h"
 
-Event::Event(int id, std::string_view title)
-    : _id(id), _title(title) {
+Event::Event(std::string_view title)
+    : _id(-1), _title(title) {
     if (title.empty()) {
-        throw InvalidDataException("Название события не может быть пустым");
+        throw InvalidDataException("название события не может быть пустым");
     }
 }
-
-Event::~Event() {}
 
 int Event::getId() const { return _id; }
 std::string_view Event::getTitle() const { return _title; }
 
+void Event::setId(int newId) { _id = newId; }
+
 void Event::setTitle(std::string_view newTitle) {
     if (newTitle.empty()) {
-        throw InvalidDataException("Название события не может быть пустым");
+        throw InvalidDataException("название события не может быть пустым");
     }
     _title = newTitle;
 }
 
-std::string_view Event::getType() const { return "Событие"; }
+std::string Event::getType() const { return "Событие"; }
 double Event::calculateMetric() const { return 0.0; }
-std::string_view Event::getMetricName() const { return "Метрика"; }
+std::string Event::getMetricName() const { return "Метрика"; }
 
-void Event::printEventInformation() const { std::cout << *this << "\n"; }
+void Event::printInfo(std::ostream& os) const {
+    os << "\n  ID: " << _id;
+}
+
+std::ostream& operator<<(std::ostream& os, const Event& e) {
+    os << "[" << e.getType() << "] " << e._title
+       << " | ID: " << e._id
+       << " | Метрика: " << e.calculateMetric()
+       << " (" << e.getMetricName() << ")";
+    e.printInfo(os);
+    return os;
+}

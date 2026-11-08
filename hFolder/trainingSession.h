@@ -1,37 +1,38 @@
 #pragma once
 
 #include "event.h"
+#include "collection.h"
+#include "coach.h"
+
+class Player;
 
 class TrainingSession : public Event {
 public:
-    enum class Level { Beginner, Intermediate, Advanced };
-
-    TrainingSession(int id, std::string_view title,
+    TrainingSession(std::string_view title,
                     std::string_view topic,
-                    std::string_view coachName,
-                    Level level,
-                    int durationMinutes);
+                    int durationMinutes,
+                    std::shared_ptr<Coach> coach);
 
     std::string_view getTopic() const;
-    std::string_view getCoachName() const;
-    Level getLevel() const;
     int getDurationMinutes() const;
+    std::shared_ptr<Coach> getCoach() const;
+    const Collection<Player>& getParticipants() const;
 
     void setTopic(std::string_view newTopic);
-    void setCoachName(std::string_view newCoachName);
-    void setLevel(Level newLevel);
     void setDurationMinutes(int newDurationMinutes);
+    void setCoach(std::shared_ptr<Coach> newCoach);
 
-    std::string_view getType() const override;
+    std::string getType() const override;
     double calculateMetric() const override;
-    std::string_view getMetricName() const override;
-    void printEventInformation() const override;
+    std::string getMetricName() const override;
+    void printInfo(std::ostream& os) const override;
 
-    static std::string_view levelToString(Level level);
+    TrainingSession& operator+=(std::shared_ptr<Player> player);
+    TrainingSession& operator-=(std::shared_ptr<Player> player);
 
 private:
     std::string _topic;
-    std::string _coachName;
-    Level _level;
     int _durationMinutes;
+    std::shared_ptr<Coach> _coach;
+    Collection<Player> _participants;
 };

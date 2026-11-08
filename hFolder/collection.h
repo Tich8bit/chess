@@ -7,59 +7,32 @@
 template <typename T>
 class Collection {
 public:
-    void add(const T& item);
-    bool removeAt(int index);
+    Collection() = default;
+    ~Collection() = default;
 
-    template <typename Predicate>
-    int removeIf(Predicate pred);
+    const std::vector<std::shared_ptr<T>>& getItems() const;
 
-    T* get(int index);
-    const T* get(int index) const;
-
-    template <typename Predicate>
-    T* find(Predicate pred);
-
-    template <typename Predicate>
-    const T* find(Predicate pred) const;
-
-    int size() const;
-    bool isEmpty() const;
-    void clear();
-    void print(std::ostream& os) const;
-
-    std::vector<T>& data();
-    const std::vector<T>& data() const;
-
-private:
-    std::vector<T> _items;
-};
-
-template <typename T>
-class Collection<std::shared_ptr<T>> {
-public:
     void add(const std::shared_ptr<T>& item);
-    bool removeAt(int index);
+    void removeAt(size_t index);
 
     template <typename Predicate>
-    int removeIf(Predicate pred);
+    size_t removeIf(Predicate pred);
 
-    std::shared_ptr<T> getShared(int index) const;
-    T* get(int index) const;
-
-    template <typename Predicate>
-    std::shared_ptr<T> findShared(Predicate pred) const;
+    std::shared_ptr<T> get(size_t index) const;
 
     template <typename Predicate>
-    T* find(Predicate pred) const;
+    std::shared_ptr<T> find(Predicate pred) const;
 
-    int size() const;
-    bool isEmpty() const;
+    template <typename Predicate>
+    Collection<T> findAll(Predicate pred) const;
+
+    size_t size() const;
+    bool empty() const;
     void clear();
-    void print(std::ostream& os) const;
-    double averageMetric() const;
+    void print(std::ostream& os = std::cout) const;
 
-    std::vector<std::shared_ptr<T>>& data();
-    const std::vector<std::shared_ptr<T>>& data() const;
+    auto begin() const;
+    auto end() const;
 
 private:
     std::vector<std::shared_ptr<T>> _items;

@@ -1,53 +1,63 @@
 #include "coach.h"
 #include "exceptions/exception.h"
 
-Coach::Coach(int id, std::string_view fullName, int birthYear,
-             int experienceYears, int studentsCount, std::string_view specialization)
-    : Member(id, fullName, birthYear),
+Coach::Coach(std::string_view firstName,
+             std::string_view lastName,
+             std::string_view middleName,
+             const Ratings& ratings,
+             int wins,
+             int draws,
+             int losses,
+             int experienceYears,
+             std::string_view specialization,
+             int qualificationLevel)
+    : Player(firstName, lastName, middleName, ratings, wins, draws, losses),
       _experienceYears(experienceYears),
-      _studentsCount(studentsCount),
-      _specialization(specialization) {
+      _specialization(specialization),
+      _qualificationLevel(qualificationLevel) {
     if (experienceYears < 0 || experienceYears > 80) {
-        throw LimitExceededException("Стаж должен быть от 0 до 80 лет");
+        throw LimitExceededException("стаж должен быть от 0 до 80 лет");
     }
-    if (studentsCount < 0 || studentsCount > 1000) {
-        throw LimitExceededException("Количество учеников должно быть от 0 до 1000");
+    if (qualificationLevel < 1 || qualificationLevel > 5) {
+        throw LimitExceededException("квалификация должна быть от 1 до 5");
     }
 }
 
 int Coach::getExperienceYears() const { return _experienceYears; }
-int Coach::getStudentsCount() const { return _studentsCount; }
 std::string_view Coach::getSpecialization() const { return _specialization; }
+int Coach::getQualificationLevel() const { return _qualificationLevel; }
 
 void Coach::setExperienceYears(int newExperienceYears) {
     if (newExperienceYears < 0 || newExperienceYears > 80) {
-        throw LimitExceededException("Стаж должен быть от 0 до 80 лет");
+        throw LimitExceededException("стаж должен быть от 0 до 80 лет");
     }
     _experienceYears = newExperienceYears;
-}
-
-void Coach::setStudentsCount(int newStudentsCount) {
-    if (newStudentsCount < 0 || newStudentsCount > 1000) {
-        throw LimitExceededException("Количество учеников должно быть от 0 до 1000");
-    }
-    _studentsCount = newStudentsCount;
 }
 
 void Coach::setSpecialization(std::string_view newSpecialization) {
     _specialization = newSpecialization;
 }
 
-std::string_view Coach::getRole() const { return "Тренер"; }
-
-double Coach::calculateMetric() const {
-    return _experienceYears * 3.0 + _studentsCount * 0.5;
+void Coach::setQualificationLevel(int newQualificationLevel) {
+    if (newQualificationLevel < 1 || newQualificationLevel > 5) {
+        throw LimitExceededException("квалификация должна быть от 1 до 5");
+    }
+    _qualificationLevel = newQualificationLevel;
 }
 
-std::string_view Coach::getMetricName() const { return "Тренерский вклад"; }
+std::string Coach::getRole() const { return "Тренер"; }
 
-void Coach::printMemberInformation() const {
-    std::cout << *this
-              << " | Стаж: " << _experienceYears << " лет"
-              << " | Учеников: " << _studentsCount
-              << " | Специализация: " << _specialization << "\n";
+double Coach::calculateMetric() const {
+    return _experienceYears * 3.0
+         + _qualificationLevel * 10.0
+         + static_cast<double>(getRatings().getMax());
+}
+
+std::string Coach::getMetricName() const { return "Тренерский вклад"; }
+
+void Coach::printInfo(std::ostream& os) const {
+    Player::printInfo(os);
+    os << "\n  Стаж: " << _experienceYears << " лет"
+       << "\n  Квалификация: " << _qualificationLevel
+       << "\n  Специализация: " << _specialization;
 }

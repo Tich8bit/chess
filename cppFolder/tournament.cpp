@@ -1,47 +1,49 @@
 #include "tournament.h"
+#include "player.h"
 #include "exceptions/exception.h"
 
-Tournament::Tournament(int id, std::string_view title,
+Tournament::Tournament(std::string_view title,
                        int roundsCount,
                        TimeControl timeControl,
-                       System system,
-                       int playerCount)
-    : Event(id, title),
+                       TournamentSystem system,
+                       int maxPlayers)
+    : Event(title),
       _roundsCount(roundsCount),
       _timeControl(timeControl),
       _system(system),
-      _playerCount(playerCount) {
+      _maxPlayers(maxPlayers) {
     if (roundsCount < 1 || roundsCount > 30) {
-        throw LimitExceededException("Количество туров должно быть от 1 до 30");
+        throw LimitExceededException("количество туров должно быть от 1 до 30");
     }
-    if (playerCount < 2 || playerCount > 200) {
-        throw LimitExceededException("Количество участников должно быть от 2 до 200");
+    if (maxPlayers < 2 || maxPlayers > 200) {
+        throw LimitExceededException("количество участников должно быть от 2 до 200");
     }
 }
 
 int Tournament::getRoundsCount() const { return _roundsCount; }
 Tournament::TimeControl Tournament::getTimeControl() const { return _timeControl; }
-Tournament::System Tournament::getSystem() const { return _system; }
-int Tournament::getPlayerCount() const { return _playerCount; }
+Tournament::TournamentSystem Tournament::getSystem() const { return _system; }
+int Tournament::getMaxPlayers() const { return _maxPlayers; }
+const Collection<Player>& Tournament::getPlayers() const { return _players; }
 
 void Tournament::setRoundsCount(int newRoundsCount) {
     if (newRoundsCount < 1 || newRoundsCount > 30) {
-        throw LimitExceededException("Количество туров должно быть от 1 до 30");
+        throw LimitExceededException("количество туров должно быть от 1 до 30");
     }
     _roundsCount = newRoundsCount;
 }
 
 void Tournament::setTimeControl(TimeControl newTimeControl) { _timeControl = newTimeControl; }
-void Tournament::setSystem(System newSystem) { _system = newSystem; }
+void Tournament::setSystem(TournamentSystem newSystem) { _system = newSystem; }
 
-void Tournament::setPlayerCount(int newPlayerCount) {
-    if (newPlayerCount < 2 || newPlayerCount > 200) {
-        throw LimitExceededException("Количество участников должно быть от 2 до 200");
+void Tournament::setMaxPlayers(int newMaxPlayers) {
+    if (newMaxPlayers < 2 || newMaxPlayers > 200) {
+        throw LimitExceededException("количество участников должно быть от 2 до 200");
     }
-    _playerCount = newPlayerCount;
+    _maxPlayers = newMaxPlayers;
 }
 
-std::string_view Tournament::getType() const { return "Турнир"; }
+std::string Tournament::getType() const { return "Турнир"; }
 
 double Tournament::calculateMetric() const {
     double coef = 1.0;
@@ -50,18 +52,45 @@ double Tournament::calculateMetric() const {
     return _roundsCount * coef;
 }
 
-std::string_view Tournament::getMetricName() const { return "Игровая нагрузка"; }
+std::string Tournament::getMetricName() const { return "Игровая нагрузка"; }
 
-void Tournament::printEventInformation() const {
-    std::cout << *this
-              << " | Туров: " << _roundsCount
-              << " | Контроль: " << timeControlToString(_timeControl)
-              << " | Система: " << systemToString(_system)
-              << " | Участников: " << _playerCount
-              << "\n";
+void Tournament::printInfo(std::ostream& os) const {
+    Event::printInfo(os);
+    os << "\n  Туров: " << _roundsCount
+       << "\n  Контроль: " << timeControlToString(_timeControl)
+       << "\n  Система: " << systemToString(_system)
+       << "\n  Участников: " << _players.size() << "/" << _maxPlayers;
 }
 
-std::string_view Tournament::timeControlToString(TimeControl tc) {
+Tournament& Tournament::operator+=(std::shared_ptr<Player> player) {
+    if (!player) {
+        throw InvalidDataException("пустой указатель на игрока");
+    }
+    if (_players.size() >= static_cast<size_t>(_maxPlayers)) {
+        throw LimitExceededException("турнир заполнен (макс. " + std::to_string(_maxPlayers) + ")");
+    }
+    if (auto existing = _players.find([&player](const std::shared_ptr<Player>& p) {
+        return p == player;
+    })) {
+        throw DuplicateIdException("игрок " + player->getFullName() + " уже участвует в турнире");
+    }
+    _players.add(player);
+    return *this;
+}
+
+Tournament& Tournament::operator-=(std::shared_ptr<Player> player) {
+    if (!player) {
+        throw InvalidDataException("пустой указатель на игрока");
+    }
+    if (size_t removed = _players.removeIf([&player](const std::shared_ptr<Player>& p) {
+        return p == player;
+    }); removed == 0) {
+        throw ObjectNotFoundException("игрок " + player->getFullName() + " не участвует в турнире");
+    }
+    return *this;
+}
+
+std::string Tournament::timeControlToString(TimeControl tc) {
     switch (tc) {
         case TimeControl::Blitz:   return "Блиц";
         case TimeControl::Rapid:   return "Рапид";
@@ -70,10 +99,10 @@ std::string_view Tournament::timeControlToString(TimeControl tc) {
     return "Неизвестно";
 }
 
-std::string_view Tournament::systemToString(System sys) {
+std::string Tournament::systemToString(TournamentSystem sys) {
     switch (sys) {
-        case System::RoundRobin: return "Круговая";
-        case System::Swiss:      return "Швейцарская";
+        case TournamentSystem::RoundRobin: return "Круговая";
+        case TournamentSystem::Swiss:      return "Швейцарская";
     }
     return "Неизвестно";
 }

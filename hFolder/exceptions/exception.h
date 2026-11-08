@@ -6,3 +6,5 @@
 #include "objectNotFoundException.h"
 #include "limitExceededException.h"
 #include "invalidOperationException.h"
+#include "outOfRangeException.h"
+#include "relationException.h"

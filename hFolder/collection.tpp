@@ -1,155 +1,113 @@
 #pragma once
 
+#include <iostream>
 #include <algorithm>
+#include "exceptions/exception.h"
 
 template <typename T>
-void Collection<T>::add(const T& item) { _items.push_back(item); }
-
-template <typename T>
-bool Collection<T>::removeAt(int index) {
-    if (index < 0 || index >= static_cast<int>(_items.size())) {
-        std::cerr << "[Ошибка] Индекс " << index << " вне диапазона.\n";
-        return false;
-    }
-    _items.erase(_items.begin() + index);
-    return true;
+const std::vector<std::shared_ptr<T>>& Collection<T>::getItems() const {
+    return _items;
 }
 
 template <typename T>
-template <typename Predicate>
-int Collection<T>::removeIf(Predicate pred) {
-    int before = static_cast<int>(_items.size());
-    _items.erase(std::remove_if(_items.begin(), _items.end(), pred), _items.end());
-    return before - static_cast<int>(_items.size());
-}
-
-template <typename T>
-T* Collection<T>::get(int index) {
-    if (index < 0 || index >= static_cast<int>(_items.size())) return nullptr;
-    return &_items[index];
-}
-
-template <typename T>
-const T* Collection<T>::get(int index) const {
-    if (index < 0 || index >= static_cast<int>(_items.size())) return nullptr;
-    return &_items[index];
-}
-
-template <typename T>
-template <typename Predicate>
-T* Collection<T>::find(Predicate pred) {
-    for (auto& item : _items) if (pred(item)) return &item;
-    return nullptr;
-}
-
-template <typename T>
-template <typename Predicate>
-const T* Collection<T>::find(Predicate pred) const {
-    for (const auto& item : _items) if (pred(item)) return &item;
-    return nullptr;
-}
-
-template <typename T>
-int Collection<T>::size() const { return static_cast<int>(_items.size()); }
-
-template <typename T>
-bool Collection<T>::isEmpty() const { return _items.empty(); }
-
-template <typename T>
-void Collection<T>::clear() { _items.clear(); }
-
-template <typename T>
-void Collection<T>::print(std::ostream& os) const {
-    for (const auto& item : _items) os << item << "\n";
-}
-
-template <typename T>
-std::vector<T>& Collection<T>::data() { return _items; }
-
-template <typename T>
-const std::vector<T>& Collection<T>::data() const { return _items; }
-
-template <typename T>
-void Collection<std::shared_ptr<T>>::add(const std::shared_ptr<T>& item) {
-    if (!item) {
-        std::cerr << "[Ошибка] Пустой указатель.\n";
-        return;
-    }
+void Collection<T>::add(const std::shared_ptr<T>& item) {
     _items.push_back(item);
 }
 
 template <typename T>
-bool Collection<std::shared_ptr<T>>::removeAt(int index) {
-    if (index < 0 || index >= static_cast<int>(_items.size())) {
-        std::cerr << "[Ошибка] Индекс " << index << " вне диапазона.\n";
-        return false;
+void Collection<T>::removeAt(size_t index) {
+    if (index >= _items.size()) {
+        throw OutOfRangeException("Индекс " + std::to_string(index) +
+                                   " вне диапазона (размер: " + std::to_string(_items.size()) + ")");
     }
     _items.erase(_items.begin() + index);
-    return true;
 }
 
 template <typename T>
 template <typename Predicate>
-int Collection<std::shared_ptr<T>>::removeIf(Predicate pred) {
-    int before = static_cast<int>(_items.size());
-    _items.erase(std::remove_if(_items.begin(), _items.end(), pred), _items.end());
-    return before - static_cast<int>(_items.size());
+size_t Collection<T>::removeIf(Predicate pred) {
+    size_t removed = 0;
+    for (auto it = _items.begin(); it != _items.end(); ) {
+        if (*it && pred(*it)) {
+            it = _items.erase(it);
+            ++removed;
+        } else {
+            ++it;
+        }
+    }
+    return removed;
 }
 
 template <typename T>
-std::shared_ptr<T> Collection<std::shared_ptr<T>>::getShared(int index) const {
-    if (index < 0 || index >= static_cast<int>(_items.size())) return nullptr;
+std::shared_ptr<T> Collection<T>::get(size_t index) const {
+    if (index >= _items.size()) {
+        throw OutOfRangeException("Индекс " + std::to_string(index) +
+                                   " вне диапазона (размер: " + std::to_string(_items.size()) + ")");
+    }
     return _items[index];
 }
 
 template <typename T>
-T* Collection<std::shared_ptr<T>>::get(int index) const {
-    if (index < 0 || index >= static_cast<int>(_items.size())) return nullptr;
-    return _items[index].get();
-}
-
-template <typename T>
 template <typename Predicate>
-std::shared_ptr<T> Collection<std::shared_ptr<T>>::findShared(Predicate pred) const {
-    for (const auto& item : _items) if (item && pred(*item)) return item;
+std::shared_ptr<T> Collection<T>::find(Predicate pred) const {
+    for (const auto& item : _items) {
+        if (item && pred(item)) {
+            return item;
+        }
+    }
     return nullptr;
 }
 
 template <typename T>
 template <typename Predicate>
-T* Collection<std::shared_ptr<T>>::find(Predicate pred) const {
-    for (const auto& item : _items) if (item && pred(*item)) return item.get();
-    return nullptr;
+Collection<T> Collection<T>::findAll(Predicate pred) const {
+    Collection<T> result;
+    for (const auto& item : _items) {
+        if (item && pred(item)) {
+            result.add(item);
+        }
+    }
+    return result;
 }
 
 template <typename T>
-int Collection<std::shared_ptr<T>>::size() const { return static_cast<int>(_items.size()); }
-
-template <typename T>
-bool Collection<std::shared_ptr<T>>::isEmpty() const { return _items.empty(); }
-
-template <typename T>
-void Collection<std::shared_ptr<T>>::clear() { _items.clear(); }
-
-template <typename T>
-void Collection<std::shared_ptr<T>>::print(std::ostream& os) const {
-    for (const auto& item : _items) if (item) os << *item << "\n";
+size_t Collection<T>::size() const {
+    return _items.size();
 }
 
 template <typename T>
-double Collection<std::shared_ptr<T>>::averageMetric() const {
-    if (_items.empty()) return 0.0;
-    double sum = 0.0;
-    for (const auto& item : _items) if (item) sum += item->calculateMetric();
-    return sum / _items.size();
+bool Collection<T>::empty() const {
+    return _items.empty();
 }
 
 template <typename T>
-std::vector<std::shared_ptr<T>>& Collection<std::shared_ptr<T>>::data() {
-    return _items;
+void Collection<T>::clear() {
+    _items.clear();
 }
 
 template <typename T>
-const std::vector<std::shared_ptr<T>>& Collection<std::shared_ptr<T>>::data() const {
-    return _items;
+void Collection<T>::print(std::ostream& os) const {
+    if (_items.empty()) {
+        os << " (коллекция пуста)\n";
+        return;
+    }
+    for (size_t i = 0; i < _items.size(); ++i) {
+        os << "[" << i << "] ";
+        if (_items[i]) {
+            os << *_items[i];
+        } else {
+            os << " (null)";
+        }
+        os << "\n";
+    }
+}
+
+template <typename T>
+auto Collection<T>::begin() const {
+    return _items.begin();
+}
+
+template <typename T>
+auto Collection<T>::end() const {
+    return _items.end();
 }

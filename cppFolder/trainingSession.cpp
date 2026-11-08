@@ -1,80 +1,81 @@
 #include "trainingSession.h"
+#include "player.h"
 #include "exceptions/exception.h"
 
-TrainingSession::TrainingSession(int id, std::string_view title,
+TrainingSession::TrainingSession(std::string_view title,
                                  std::string_view topic,
-                                 std::string_view coachName,
-                                 Level level,
-                                 int durationMinutes)
-    : Event(id, title),
+                                 int durationMinutes,
+                                 std::shared_ptr<Coach> coach)
+    : Event(title),
       _topic(topic),
-      _coachName(coachName),
-      _level(level),
-      _durationMinutes(durationMinutes) {
+      _durationMinutes(durationMinutes),
+      _coach(coach) {
     if (topic.empty()) {
-        throw InvalidDataException("Тема тренировки не может быть пустой");
-    }
-    if (coachName.empty()) {
-        throw InvalidDataException("Имя тренера не может быть пустым");
+        throw InvalidDataException("тема тренировки не может быть пустой");
     }
     if (durationMinutes < 10 || durationMinutes > 300) {
-        throw LimitExceededException("Длительность тренировки должна быть от 10 до 300 минут");
+        throw LimitExceededException("длительность должна быть от 10 до 300 минут");
     }
 }
 
 std::string_view TrainingSession::getTopic() const { return _topic; }
-std::string_view TrainingSession::getCoachName() const { return _coachName; }
-TrainingSession::Level TrainingSession::getLevel() const { return _level; }
 int TrainingSession::getDurationMinutes() const { return _durationMinutes; }
+std::shared_ptr<Coach> TrainingSession::getCoach() const { return _coach; }
+const Collection<Player>& TrainingSession::getParticipants() const { return _participants; }
 
 void TrainingSession::setTopic(std::string_view newTopic) {
     if (newTopic.empty()) {
-        throw InvalidDataException("Тема тренировки не может быть пустой");
+        throw InvalidDataException("тема тренировки не может быть пустой");
     }
     _topic = newTopic;
 }
 
-void TrainingSession::setCoachName(std::string_view newCoachName) {
-    if (newCoachName.empty()) {
-        throw InvalidDataException("Имя тренера не может быть пустым");
-    }
-    _coachName = newCoachName;
-}
-
-void TrainingSession::setLevel(Level newLevel) { _level = newLevel; }
-
 void TrainingSession::setDurationMinutes(int newDurationMinutes) {
     if (newDurationMinutes < 10 || newDurationMinutes > 300) {
-        throw LimitExceededException("Длительность тренировки должна быть от 10 до 300 минут");
+        throw LimitExceededException("длительность должна быть от 10 до 300 минут");
     }
     _durationMinutes = newDurationMinutes;
 }
 
-std::string_view TrainingSession::getType() const { return "Тренировка"; }
+void TrainingSession::setCoach(std::shared_ptr<Coach> newCoach) { _coach = newCoach; }
+
+std::string TrainingSession::getType() const { return "Тренировка"; }
 
 double TrainingSession::calculateMetric() const {
-    double coef = 1.0;
-    if (_level == Level::Intermediate) coef = 1.5;
-    else if (_level == Level::Advanced) coef = 2.0;
-    return _durationMinutes * coef;
+    return _durationMinutes * (1.0 + _participants.size() * 0.1);
 }
 
-std::string_view TrainingSession::getMetricName() const { return "Педагогическая нагрузка"; }
+std::string TrainingSession::getMetricName() const { return "Педагогическая нагрузка"; }
 
-void TrainingSession::printEventInformation() const {
-    std::cout << *this
-              << " | Тема: " << _topic
-              << " | Тренер: " << _coachName
-              << " | Уровень: " << levelToString(_level)
-              << " | Длительность: " << _durationMinutes << " мин"
-              << "\n";
+void TrainingSession::printInfo(std::ostream& os) const {
+    Event::printInfo(os);
+    os << "\n  Тема: " << _topic
+       << "\n  Тренер: " << (_coach ? _coach->getFullName() : "не назначен")
+       << "\n  Длительность: " << _durationMinutes << " мин"
+       << "\n  Участников: " << _participants.size();
 }
 
-std::string_view TrainingSession::levelToString(Level level) {
-    switch (level) {
-        case Level::Beginner:     return "Начинающие";
-        case Level::Intermediate: return "Средний";
-        case Level::Advanced:     return "Продвинутый";
+TrainingSession& TrainingSession::operator+=(std::shared_ptr<Player> player) {
+    if (!player) {
+        throw InvalidDataException("пустой указатель на игрока");
     }
-    return "Неизвестно";
+    if (auto existing = _participants.find([&player](const std::shared_ptr<Player>& p) {
+        return p == player;
+    })) {
+        throw DuplicateIdException("игрок " + player->getFullName() + " уже записан на тренировку");
+    }
+    _participants.add(player);
+    return *this;
+}
+
+TrainingSession& TrainingSession::operator-=(std::shared_ptr<Player> player) {
+    if (!player) {
+        throw InvalidDataException("пустой указатель на игрока");
+    }
+    if (size_t removed = _participants.removeIf([&player](const std::shared_ptr<Player>& p) {
+        return p == player;
+    }); removed == 0) {
+        throw ObjectNotFoundException("игрок " + player->getFullName() + " не записан на тренировку");
+    }
+    return *this;
 }

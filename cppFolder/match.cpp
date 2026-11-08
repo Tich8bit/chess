@@ -1,38 +1,75 @@
 #include "match.h"
+#include "player.h"
+#include "tournament.h"
 #include "exceptions/exception.h"
 
-Match::Match(const std::shared_ptr<Player>& whitePlayer,
-             const std::shared_ptr<Player>& blackPlayer,
+Match::Match(std::shared_ptr<Player> whitePlayer,
+             std::shared_ptr<Player> blackPlayer,
              std::string_view date)
-    : _whitePlayer(whitePlayer),
+    : _id(-1),
+      _whitePlayer(whitePlayer),
       _blackPlayer(blackPlayer),
       _date(date),
       _result(Result::NotPlayed) {
+    if (!whitePlayer || !blackPlayer) {
+        throw InvalidDataException("игроки не могут быть пустыми");
+    }
     if (whitePlayer == blackPlayer) {
-        throw InvalidOperationException("Игрок не может играть сам с собой");
+        throw InvalidOperationException("игрок не может играть сам с собой");
     }
     if (date.empty()) {
-        throw InvalidDataException("Дата партии не может быть пустой");
+        throw InvalidDataException("дата партии не может быть пустой");
     }
 }
 
-const std::shared_ptr<Player>& Match::getWhitePlayer() const { return _whitePlayer; }
-const std::shared_ptr<Player>& Match::getBlackPlayer() const { return _blackPlayer; }
+int Match::getId() const { return _id; }
+std::shared_ptr<Player> Match::getWhitePlayer() const { return _whitePlayer; }
+std::shared_ptr<Player> Match::getBlackPlayer() const { return _blackPlayer; }
 std::string_view Match::getDate() const { return _date; }
 Match::Result Match::getResult() const { return _result; }
+std::shared_ptr<Tournament> Match::getTournament() const { return _tournament.lock(); }
 
-void Match::setResult(Result res) { _result = res; }
+void Match::setId(int newId) { _id = newId; }
 
-void Match::play(Result res) {
-    if (res == Result::NotPlayed) {
-        throw InvalidOperationException("Нельзя записать результат 'не сыграна'");
+void Match::setDate(std::string_view newDate) {
+    if (newDate.empty()) {
+        throw InvalidDataException("дата партии не может быть пустой");
     }
-    _result = res;
+    _date = newDate;
 }
 
-void Match::printMatchInformation() const { std::cout << *this << "\n"; }
+void Match::setResult(Result newResult) { _result = newResult; }
+
+void Match::play(Result newResult) {
+    if (newResult == Result::NotPlayed) {
+        throw InvalidOperationException("нельзя записать результат 'не сыграна'");
+    }
+    _result = newResult;
+}
+
+void Match::setTournament(std::shared_ptr<Tournament> newTournament) {
+    _tournament = newTournament;
+}
 
 double Match::calculateMetric() const {
-    if (_result == Result::NotPlayed) return 0.0;
-    return 1.0;
+    return _result == Result::NotPlayed ? 0.0 : 1.0;
+}
+
+bool operator==(const Match& a, const Match& b) {
+    return a._whitePlayer == b._whitePlayer
+        && a._blackPlayer == b._blackPlayer
+        && a._date == b._date;
+}
+
+std::ostream& operator<<(std::ostream& os, const Match& m) {
+    os << "Дата: " << m._date
+       << " | " << m._whitePlayer->getFullName() << " (белые) vs "
+       << m._blackPlayer->getFullName() << " (чёрные) | Результат: ";
+    switch (m._result) {
+        case Match::Result::NotPlayed: os << "не сыграна"; break;
+        case Match::Result::Draw:      os << "ничья"; break;
+        case Match::Result::WhiteWin:  os << "победа белых"; break;
+        case Match::Result::BlackWin:  os << "победа чёрных"; break;
+    }
+    return os;
 }

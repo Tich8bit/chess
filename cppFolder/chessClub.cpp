@@ -1,158 +1,177 @@
 #include "chessClub.h"
 #include "exceptions/exception.h"
 
-ChessClub::ChessClub(std::string_view name) 
-    : _clubName(name), _nextMemberId(1) {
+ChessClub::ChessClub(std::string_view name)
+    : _clubName(name),
+      _nextPlayerId(1),
+      _nextEventId(1),
+      _nextMatchId(1) {
     if (name.empty()) {
-        throw InvalidDataException("Название клуба не может быть пустым");
+        throw InvalidDataException("название клуба не может быть пустым");
     }
 }
 
 std::string_view ChessClub::getName() const { return _clubName; }
-int ChessClub::getMemberCount() const { return _members.size(); }
-int ChessClub::getMatchCount() const { return _matches.size(); }
-int ChessClub::getEventCount() const { return _events.size(); }
+size_t ChessClub::getPlayerCount() const { return _players.size(); }
+size_t ChessClub::getEventCount() const { return _events.size(); }
+size_t ChessClub::getMatchCount() const { return _matches.size(); }
 
-void ChessClub::addMember(const std::shared_ptr<Member>& member) {
-    if (!member) {
-        throw InvalidDataException("Пустой указатель на участника");
+const Collection<Player>& ChessClub::getPlayers() const { return _players; }
+const Collection<Event>& ChessClub::getEvents() const { return _events; }
+const Collection<Match>& ChessClub::getMatches() const { return _matches; }
+
+void ChessClub::addPlayer(std::shared_ptr<Player> player) {
+    if (!player) {
+        throw InvalidDataException("пустой указатель на игрока");
     }
-    for (int i = 0; i < _members.size(); ++i) {
-        if (auto existing = _members.getShared(i)) {
-            if (*existing == *member) {
-                throw DuplicateIdException("Участник с ID " + std::to_string(member->getId()) + " уже существует");
-            }
-        }
+    player->setId(_nextPlayerId++);
+    _players.add(player);
+}
+
+void ChessClub::addPlayerWithId(std::shared_ptr<Player> player, int id) {
+    if (!player) {
+        throw InvalidDataException("пустой указатель на игрока");
     }
-    member->setId(_nextMemberId++);
-    _members.add(member);
-}
-
-bool ChessClub::removeMemberAt(int index) {
-    return _members.removeAt(index);
-}
-
-std::shared_ptr<Member> ChessClub::findMemberById(int searchId) const {
-    return _members.findShared([searchId](const Member& m) {
-        return m.getId() == searchId;
-    });
-}
-
-std::shared_ptr<Player> ChessClub::findPlayerById(int searchId) const {
-    return std::dynamic_pointer_cast<Player>(findMemberById(searchId));
-}
-
-void ChessClub::createMatch(int id1, int id2, std::string_view date) {
-    auto p1 = findPlayerById(id1);
-    auto p2 = findPlayerById(id2);
-
-    if (!p1) {
-        throw ObjectNotFoundException("Игрок с ID " + std::to_string(id1) + " не найден");
+    player->setId(id);
+    _players.add(player);
+    if (id >= _nextPlayerId) {
+        _nextPlayerId = id + 1;
     }
-    if (!p2) {
-        throw ObjectNotFoundException("Игрок с ID " + std::to_string(id2) + " не найден");
-    }
-
-    _matches.add(Match(p1, p2, date));
 }
 
-void ChessClub::addEvent(const std::shared_ptr<Event>& event) {
+bool ChessClub::removePlayer(std::shared_ptr<Player> player) {
+    if (!player) {
+        throw InvalidDataException("пустой указатель на игрока");
+    }
+    if (size_t removed = _players.removeIf([&player](const std::shared_ptr<Player>& p) {
+        return p == player;
+    }); removed == 0) {
+        throw ObjectNotFoundException("игрок " + player->getFullName() + " не найден");
+    }
+    return true;
+}
+
+void ChessClub::addEvent(std::shared_ptr<Event> event) {
     if (!event) {
-        throw InvalidDataException("Пустой указатель на событие");
+        throw InvalidDataException("пустой указатель на событие");
     }
-    for (int i = 0; i < _events.size(); ++i) {
-        if (auto e = _events.get(i)) {
-            if (*e == *event) {
-                throw DuplicateIdException("Событие с ID " + std::to_string(event->getId()) + " уже существует");
-            }
-        }
-    }
+    event->setId(_nextEventId++);
     _events.add(event);
 }
 
-bool ChessClub::removeEventAt(int index) {
-    return _events.removeAt(index);
+void ChessClub::addEventWithId(std::shared_ptr<Event> event, int id) {
+    if (!event) {
+        throw InvalidDataException("пустой указатель на событие");
+    }
+    event->setId(id);
+    _events.add(event);
+    if (id >= _nextEventId) {
+        _nextEventId = id + 1;
+    }
 }
 
-std::shared_ptr<Event> ChessClub::findEventById(int searchId) const {
-    return _events.findShared([searchId](const Event& e) {
-        return e.getId() == searchId;
+bool ChessClub::removeEvent(std::shared_ptr<Event> event) {
+    if (!event) {
+        throw InvalidDataException("пустой указатель на событие");
+    }
+    if (size_t removed = _events.removeIf([&event](const std::shared_ptr<Event>& e) {
+        return e == event;
+    }); removed == 0) {
+        throw ObjectNotFoundException("событие \"" + std::string(event->getTitle()) + "\" не найдено");
+    }
+    return true;
+}
+
+void ChessClub::addMatch(std::shared_ptr<Match> match) {
+    if (!match) {
+        throw InvalidDataException("пустой указатель на партию");
+    }
+    match->setId(_nextMatchId++);
+    _matches.add(match);
+}
+
+void ChessClub::addMatchWithId(std::shared_ptr<Match> match, int id) {
+    if (!match) {
+        throw InvalidDataException("пустой указатель на партию");
+    }
+    match->setId(id);
+    _matches.add(match);
+    if (id >= _nextMatchId) {
+        _nextMatchId = id + 1;
+    }
+}
+
+bool ChessClub::removeMatch(std::shared_ptr<Match> match) {
+    if (!match) {
+        throw InvalidDataException("пустой указатель на партию");
+    }
+    if (size_t removed = _matches.removeIf([&match](const std::shared_ptr<Match>& m) {
+        return m == match;
+    }); removed == 0) {
+        throw ObjectNotFoundException("партия не найдена");
+    }
+    return true;
+}
+
+std::shared_ptr<Player> ChessClub::findPlayerById(int id) const {
+    return _players.find([id](const std::shared_ptr<Player>& p) {
+        return p->getId() == id;
     });
 }
 
-void ChessClub::printAllMembers() const {
-    std::cout << "\n=== Участники клуба \"" << _clubName << "\" ===\n";
-    if (_members.isEmpty()) {
-        std::cout << "Список пуст.\n";
-        return;
-    }
-    for (int i = 0; i < _members.size(); ++i) {
-        if (auto m = _members.get(i)) m->printMemberInformation();
-    }
+std::shared_ptr<Player> ChessClub::findPlayerByName(std::string_view namePart) const {
+    return _players.find([namePart](const std::shared_ptr<Player>& p) {
+        return p->getFullName().find(namePart) != std::string::npos;
+    });
 }
 
-void ChessClub::printAllMatches() const {
-    std::cout << "\n=== История партий ===\n";
-    if (_matches.isEmpty()) {
-        std::cout << "Партий не сыграно.\n";
-        return;
-    }
-    _matches.print(std::cout);
+std::shared_ptr<Event> ChessClub::findEventById(int id) const {
+    return _events.find([id](const std::shared_ptr<Event>& e) {
+        return e->getId() == id;
+    });
+}
+
+void ChessClub::createMatch(std::shared_ptr<Player> white,
+                            std::shared_ptr<Player> black,
+                            std::string_view date) {
+    auto match = std::make_shared<Match>(white, black, date);
+    addMatch(match);
+}
+
+void ChessClub::printAllPlayers() const {
+    std::cout << "\n=== Участники клуба \"" << _clubName << "\" ===\n";
+    _players.print();
 }
 
 void ChessClub::printAllEvents() const {
     std::cout << "\n=== События клуба ===\n";
-    if (_events.isEmpty()) {
-        std::cout << "Событий нет.\n";
-        return;
-    }
-    for (int i = 0; i < _events.size(); ++i) {
-        if (auto e = _events.get(i)) e->printEventInformation();
-    }
+    _events.print();
 }
 
-void ChessClub::printAllMetrics() const {
-    std::cout << "\n=== Метрики событий ===\n";
-    for (int i = 0; i < _events.size(); ++i) {
-        if (auto e = _events.get(i)) {
-            std::cout << e->getType() << " \"" << e->getTitle() << "\" -> "
-                      << e->getMetricName() << ": " << e->calculateMetric() << "\n";
-        }
-    }
+void ChessClub::printAllMatches() const {
+    std::cout << "\n=== История партий ===\n";
+    _matches.print();
 }
 
-ChessClub& ChessClub::operator+=(const std::shared_ptr<Member>& member) {
-    addMember(member);
+ChessClub& ChessClub::operator+=(std::shared_ptr<Player> player) {
+    addPlayer(player);
     return *this;
 }
 
-ChessClub& ChessClub::operator-=(const std::shared_ptr<Member>& member) {
-    if (!member) return *this;
-    for (int i = 0; i < _members.size(); ++i) {
-        if (auto cur = _members.getShared(i)) {
-            if (cur->getId() == member->getId()) {
-                _members.removeAt(i);
-                return *this;
-            }
-        }
-    }
-    return *this;
-}
-
-ChessClub& ChessClub::operator+=(const std::shared_ptr<Event>& event) {
+ChessClub& ChessClub::operator+=(std::shared_ptr<Event> event) {
     addEvent(event);
     return *this;
 }
 
-ChessClub& ChessClub::operator-=(const std::shared_ptr<Event>& event) {
-    if (!event) return *this;
-    for (int i = 0; i < _events.size(); ++i) {
-        if (auto cur = _events.get(i)) {
-            if (cur->getId() == event->getId()) {
-                _events.removeAt(i);
-                return *this;
-            }
-        }
-    }
+ChessClub& ChessClub::operator+=(std::shared_ptr<Match> match) {
+    addMatch(match);
     return *this;
+}
+
+std::ostream& operator<<(std::ostream& os, const ChessClub& club) {
+    os << "Клуб: " << club._clubName
+       << " | Игроков: " << club._players.size()
+       << " | Событий: " << club._events.size()
+       << " | Партий: " << club._matches.size();
+    return os;
 }
