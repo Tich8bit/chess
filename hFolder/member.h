@@ -19,6 +19,7 @@ public:
     int getAge() const;
 
     void setFullName(std::string_view newFullName);
+    void setId(int newId) { _id = newId; }
 
     virtual std::string_view getRole() const = 0;
     virtual double calculateMetric() const;

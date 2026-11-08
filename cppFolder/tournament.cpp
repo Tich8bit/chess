@@ -1,4 +1,5 @@
 #include "tournament.h"
+#include "exceptions/exception.h"
 
 Tournament::Tournament(int id, std::string_view title,
                        int roundsCount,
@@ -9,17 +10,36 @@ Tournament::Tournament(int id, std::string_view title,
       _roundsCount(roundsCount),
       _timeControl(timeControl),
       _system(system),
-      _playerCount(playerCount) {}
+      _playerCount(playerCount) {
+    if (roundsCount < 1 || roundsCount > 30) {
+        throw LimitExceededException("Количество туров должно быть от 1 до 30");
+    }
+    if (playerCount < 2 || playerCount > 200) {
+        throw LimitExceededException("Количество участников должно быть от 2 до 200");
+    }
+}
 
 int Tournament::getRoundsCount() const { return _roundsCount; }
 Tournament::TimeControl Tournament::getTimeControl() const { return _timeControl; }
 Tournament::System Tournament::getSystem() const { return _system; }
 int Tournament::getPlayerCount() const { return _playerCount; }
 
-void Tournament::setRoundsCount(int newRoundsCount) { _roundsCount = newRoundsCount; }
+void Tournament::setRoundsCount(int newRoundsCount) {
+    if (newRoundsCount < 1 || newRoundsCount > 30) {
+        throw LimitExceededException("Количество туров должно быть от 1 до 30");
+    }
+    _roundsCount = newRoundsCount;
+}
+
 void Tournament::setTimeControl(TimeControl newTimeControl) { _timeControl = newTimeControl; }
 void Tournament::setSystem(System newSystem) { _system = newSystem; }
-void Tournament::setPlayerCount(int newPlayerCount) { _playerCount = newPlayerCount; }
+
+void Tournament::setPlayerCount(int newPlayerCount) {
+    if (newPlayerCount < 2 || newPlayerCount > 200) {
+        throw LimitExceededException("Количество участников должно быть от 2 до 200");
+    }
+    _playerCount = newPlayerCount;
+}
 
 std::string_view Tournament::getType() const { return "Турнир"; }
 

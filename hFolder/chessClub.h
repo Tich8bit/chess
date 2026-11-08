@@ -71,6 +71,7 @@ public:
 
 private:
     std::string _clubName;
+    int _nextMemberId;
     Collection<std::shared_ptr<Member>> _members;
     Collection<Match> _matches;
     Collection<std::shared_ptr<Event>> _events;

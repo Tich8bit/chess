@@ -1,4 +1,5 @@
 #include "match.h"
+#include "exceptions/exception.h"
 
 Match::Match(const std::shared_ptr<Player>& whitePlayer,
              const std::shared_ptr<Player>& blackPlayer,
@@ -8,7 +9,10 @@ Match::Match(const std::shared_ptr<Player>& whitePlayer,
       _date(date),
       _result(Result::NotPlayed) {
     if (whitePlayer == blackPlayer) {
-        std::cerr << "[Ошибка] Игрок не может играть сам с собой.\n";
+        throw InvalidOperationException("Игрок не может играть сам с собой");
+    }
+    if (date.empty()) {
+        throw InvalidDataException("Дата партии не может быть пустой");
     }
 }
 
@@ -21,8 +25,7 @@ void Match::setResult(Result res) { _result = res; }
 
 void Match::play(Result res) {
     if (res == Result::NotPlayed) {
-        std::cerr << "[Ошибка] Нельзя записать результат 'не сыграна'.\n";
-        return;
+        throw InvalidOperationException("Нельзя записать результат 'не сыграна'");
     }
     _result = res;
 }

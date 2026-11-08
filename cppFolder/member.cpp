@@ -1,10 +1,13 @@
 #include "member.h"
 #include "constants.h"
+#include "exceptions/exception.h"
 
 Member::Member(int id, std::string_view fullName, int birthYear)
-    : _id(id),
-      _fullName(fullName),
-      _birthYear(birthYear) {}
+    : _id(id), _fullName(fullName), _birthYear(birthYear) {
+    if (birthYear < 1900 || birthYear > CURRENT_YEAR) {
+        throw InvalidDataException("Год рождения " + std::to_string(birthYear) + " некорректен");
+    }
+}
 
 Member::~Member() {}
 
@@ -22,7 +25,12 @@ Member::Category Member::getCategory() const {
     return Category::Veteran;
 }
 
-void Member::setFullName(std::string_view newFullName) { _fullName = newFullName; }
+void Member::setFullName(std::string_view newFullName) {
+    if (newFullName.empty()) {
+        throw InvalidDataException("Имя не может быть пустым");
+    }
+    _fullName = newFullName;
+}
 
 double Member::calculateMetric() const { return 0.0; }
 std::string_view Member::getMetricName() const { return "Метрика"; }
