@@ -2,30 +2,41 @@
 
 #include "event.h"
 #include "collection.h"
+#include "player.h"
+#include "match.h"
+#include "tournamentSystem.h"
+#include <string>
+#include <string_view>
+#include <memory>
+#include <iostream>
+#include <vector>
 
-class Player;
+struct Standing {
+    std::shared_ptr<Player> player;
+    int wins;
+    int draws;
+    int losses;
+    double points;
+};
 
 class Tournament : public Event {
 public:
     enum class TimeControl { Blitz, Rapid, Classic };
-    enum class TournamentSystem { RoundRobin, Swiss };
 
     Tournament(int id,
                std::string_view title,
-               int roundsCount,
                TimeControl timeControl,
-               TournamentSystem system,
+               std::shared_ptr<TournamentSystem> system,
                int maxPlayers);
 
-    int getRoundsCount() const;
     TimeControl getTimeControl() const;
-    TournamentSystem getSystem() const;
+    std::shared_ptr<TournamentSystem> getSystem() const;
     int getMaxPlayers() const;
-    const Collection<Player>& getPlayers() const;
+    const Collection<Player>& getParticipants() const;
+    const Collection<Match>& getMatches() const;
 
-    void setRoundsCount(int newRoundsCount);
     void setTimeControl(TimeControl newTimeControl);
-    void setSystem(TournamentSystem newSystem);
+    void setSystem(std::shared_ptr<TournamentSystem> newSystem);
     void setMaxPlayers(int newMaxPlayers);
 
     std::string getType() const override;
@@ -35,14 +46,16 @@ public:
 
     Tournament& operator+=(std::shared_ptr<Player> player);
     Tournament& operator-=(std::shared_ptr<Player> player);
+    Tournament& operator+=(std::shared_ptr<Match> match);
+
+    std::vector<Standing> getStandings(bool useHeadToHead) const;
 
     static std::string timeControlToString(TimeControl tc);
-    static std::string systemToString(TournamentSystem sys);
 
 private:
-    int _roundsCount;
     TimeControl _timeControl;
-    TournamentSystem _system;
+    std::shared_ptr<TournamentSystem> _system;
     int _maxPlayers;
-    Collection<Player> _players;
+    Collection<Player> _participants;
+    Collection<Match> _matches;
 };
