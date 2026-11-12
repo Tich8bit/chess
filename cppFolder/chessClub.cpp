@@ -107,10 +107,11 @@ std::shared_ptr<Event> ChessClub::findEventById(int id) const {
     });
 }
 
+// Изменено: принимает DateTime
 void ChessClub::createMatch(int id,
                             std::shared_ptr<Player> white,
                             std::shared_ptr<Player> black,
-                            std::string_view date) {
+                            const DateTime& date) {
     auto match = std::make_shared<Match>(id, white, black, date);
     addMatch(match);
 }

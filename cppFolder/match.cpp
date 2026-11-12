@@ -2,24 +2,20 @@
 #include "player.h"
 #include "exceptions/exception.h"
 
-Match::Match(int id, std::shared_ptr<Player> whitePlayer, std::shared_ptr<Player> blackPlayer, std::string_view date)
+Match::Match(int id, std::shared_ptr<Player> whitePlayer, std::shared_ptr<Player> blackPlayer, const DateTime& date)
     : _id(id), _whitePlayer(whitePlayer), _blackPlayer(blackPlayer), _date(date), _result(MatchResult::Result::NotPlayed) {
     if (id <= 0) throw InvalidDataException("ID должен быть положительным");
     if (!whitePlayer || !blackPlayer) throw InvalidDataException("игроки не могут быть пустыми");
     if (whitePlayer == blackPlayer) throw InvalidOperationException("игрок не может играть сам с собой");
-    if (date.empty()) throw InvalidDataException("дата не может быть пустой");
 }
 
 int Match::getId() const { return _id; }
 std::shared_ptr<Player> Match::getWhitePlayer() const { return _whitePlayer; }
 std::shared_ptr<Player> Match::getBlackPlayer() const { return _blackPlayer; }
-std::string_view Match::getDate() const { return _date; }
+const DateTime& Match::getDate() const { return _date; }
 MatchResult Match::getResult() const { return _result; }
 
-void Match::setDate(std::string_view newDate) {
-    if (newDate.empty()) throw InvalidDataException("дата не может быть пустой");
-    _date = newDate;
-}
+void Match::setDate(const DateTime& newDate) { _date = newDate; }
 
 void Match::setResult(MatchResult::Result newResult) { _result.setResult(newResult); }
 

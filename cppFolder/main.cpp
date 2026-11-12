@@ -19,6 +19,7 @@
 #include "trainingSession.h"
 #include "matchResult.h"
 #include "match.h"
+#include "dateTime.h"
 #include "chessClub.h"
 #include "collection.h"
 #include "algs.h"
@@ -27,6 +28,32 @@
 #include "exceptions/exception.h"
 
 using namespace std;
+
+DateTime inputDateTime() {
+    while (true) {
+        std::string str = inputString("Введите дату (ДД.ММ.ГГГГ) и время (ЧЧ:ММ:СС через пробел): ");
+        int d, m, y, h = 0, min = 0, s = 0;
+        char dot1, dot2;
+        std::stringstream ss(str);
+        
+        if (ss >> d >> dot1 >> m >> dot2 >> y && dot1 == '.' && dot2 == '.') {
+            if (ss >> h) {
+                char colon1, colon2;
+                if (!(ss >> colon1 >> min >> colon2 >> s) || colon1 != ':' || colon2 != ':') {
+                    cout << "Неверный формат времени. Используйте ЧЧ:ММ:СС\n";
+                    continue;
+                }
+            }
+            try {
+                return DateTime(d, m, y, h, min, s);
+            } catch (const ChessException& e) {
+                cout << "Ошибка: " << e.what() << "\n";
+            }
+        } else {
+            cout << "Неверный формат. Используйте ДД.ММ.ГГГГ\n";
+        }
+    }
+}
 
 int chooseStartMode() {
     cout << "_________________________________________\n";
@@ -48,27 +75,33 @@ void printMenu() {
     cout << "_________________________________________\n";
     cout << "|          Управление клубом            |\n";
     cout << "|_______________________________________|\n";
-    cout << "|1.  Показать участников                |\n";
-    cout << "|2.  Показать события                   |\n";
-    cout << "|3.  Показать партии                    |\n";
-    cout << "|4.  Добавить игрока                    |\n";
-    cout << "|5.  Добавить тренера                   |\n";
-    cout << "|6.  Добавить турнир                    |\n";
-    cout << "|7.  Добавить тренировку                |\n";
-    cout << "|8.  Записать игрока на тренировку      |\n";
-    cout << "|9.  Записать игрока в турнир           |\n";
-    cout << "|10. Создать партию                     |\n";
-    cout << "|11. Ввести результат партии            |\n";
+    cout << "|             ДОБАВЛЕНИЕ                |\n";
+    cout << "|1.  Добавить игрока                    |\n";
+    cout << "|2.  Добавить тренера                   |\n";
+    cout << "|3.  Добавить турнир                    |\n";
+    cout << "|4.  Добавить тренировку                |\n";
+    cout << "|5.  Создать партию                     |\n";
+    cout << "|_______________________________________|\n";
+    cout << "|             СВЯЗЫВАНИЕ                |\n";
+    cout << "|6.  Записать игрока на тренировку      |\n";
+    cout << "|7.  Записать игрока в турнир           |\n";
+    cout << "|8.  Ввести результат партии            |\n";
+    cout << "|_______________________________________|\n";
+    cout << "|          ПРОСМОТР И ОТКРЕПЛЕНИЕ       |\n";
+    cout << "|9.  Показать участников                |\n";
+    cout << "|10. Показать события                   |\n";
+    cout << "|11. Показать партии                    |\n";
     cout << "|12. Таблица турнира                    |\n";
+    cout << "|13. Открепить игрока от тренировки     |\n";
+    cout << "|14. Открепить игрока от турнира        |\n";
+    cout << "|15. Удалить участника (игрок/тренер)   |\n";
+    cout << "|16. Удалить событие (турнир/тренировка)|\n";
+    cout << "|17. Удалить партию                     |\n";
     cout << "|_______________________________________|\n";
-    cout << "|             ЛР №7 — Файлы             |\n";
-    cout << "|_______________________________________|\n";
-    cout << "|13. Сохранить в файл                   |\n";
-    cout << "|14. Сформировать отчёт                 |\n";
-    cout << "|_______________________________________|\n";
-    cout << "|             ЛР №8 — STL               |\n";
-    cout << "|_______________________________________|\n";
-    cout << "|15. Аналитика (STL)                    |\n";
+    cout << "|             ФАЙЛЫ И STL               |\n";
+    cout << "|18. Сохранить в файл                   |\n";
+    cout << "|19. Сформировать отчёт                 |\n";
+    cout << "|20. Аналитика (STL)                    |\n";
     cout << "|_______________________________________|\n";
     cout << "|0. Выход                               |\n";
     cout << "|_______________________________________|\n";
@@ -103,7 +136,7 @@ void createTestSystem(ChessClub& club) {
     auto t1 = make_shared<Tournament>(1, "Чемпионат клуба", Tournament::TimeControl::Classic, sys, 12);
     *t1 += p1; *t1 += p2;
     
-    auto m1 = make_shared<Match>(1, p1, p2, "01.11.2026");
+    auto m1 = make_shared<Match>(1, p1, p2, DateTime(1, 11, 2026, 14, 30, 0));
     *t1 += m1;
     
     club += t1;
@@ -213,6 +246,45 @@ void demoAddTraining(ChessClub& club) {
     cout << "Тренировка добавлена.\n";
 }
 
+void demoCreateMatch(ChessClub& club) {
+    cout << "=== Создание партии ===\n";
+    int isTournament = inputNumber<int>("Партия в турнире? (1-да, 0-нет): ", 0, 1);
+    if (isTournament == 0) {
+        club.printAllPlayers();
+        int id = inputNumber<int>("ID партии: ", 1, 100000);
+        int whiteId = inputNumber<int>("ID белого: ", 1, 100000);
+        int blackId = inputNumber<int>("ID чёрного: ", 1, 100000);
+        DateTime date = inputDateTime();
+        auto white = club.findPlayerById(whiteId);
+        auto black = club.findPlayerById(blackId);
+        if (!white || !black) { cout << "Игрок не найден.\n"; return; }
+        club.createMatch(id, white, black, date);
+        cout << "Партия создана.\n";
+    } else {
+        for (const auto& e : club.getEvents()) {
+            if (auto t = dynamic_pointer_cast<Tournament>(e)) t->printInfo(cout);
+        }
+        int tourId = inputNumber<int>("ID турнира: ", 1, 100000);
+        auto tournament = dynamic_pointer_cast<Tournament>(club.findEventById(tourId));
+        if (!tournament) { cout << "Турнир не найден.\n"; return; }
+        cout << "Участники:\n";
+        for (const auto& p : tournament->getParticipants()) cout << " [" << p->getId() << "] " << p->getFullName() << "\n";
+        int id = inputNumber<int>("ID партии: ", 1, 100000);
+        int whiteId = inputNumber<int>("ID белого: ", 1, 100000);
+        int blackId = inputNumber<int>("ID чёрного: ", 1, 100000);
+        DateTime date = inputDateTime();
+        auto white = tournament->getParticipants().find([whiteId](const std::shared_ptr<Player>& p) { return p->getId() == whiteId; });
+        auto black = tournament->getParticipants().find([blackId](const std::shared_ptr<Player>& p) { return p->getId() == blackId; });
+        if (!white || !black) { cout << "Игрок не заявлен в турнире.\n"; return; }
+        auto match = make_shared<Match>(id, white, black, date);
+        try {
+            *tournament += match;
+            club.addMatch(match);
+            cout << "Партия создана.\n";
+        } catch (const ChessException& e) { cout << "Ошибка: " << e.what() << "\n"; }
+    }
+}
+
 void demoEnrollPlayerToTraining(ChessClub& club) {
     cout << "=== Запись на тренировку ===\n";
     club.printAllEvents();
@@ -245,45 +317,6 @@ void demoEnrollPlayerToTournament(ChessClub& club) {
         *tournament += player;
         cout << "Успешно заявлен.\n";
     } catch (const ChessException& e) { cout << "Ошибка: " << e.what() << "\n"; }
-}
-
-void demoCreateMatch(ChessClub& club) {
-    cout << "=== Создание партии ===\n";
-    int isTournament = inputNumber<int>("Партия в турнире? (1-да, 0-нет): ", 0, 1);
-    if (isTournament == 0) {
-        club.printAllPlayers();
-        int id = inputNumber<int>("ID партии: ", 1, 100000);
-        int whiteId = inputNumber<int>("ID белого: ", 1, 100000);
-        int blackId = inputNumber<int>("ID чёрного: ", 1, 100000);
-        string date = inputString("Дата: ");
-        auto white = club.findPlayerById(whiteId);
-        auto black = club.findPlayerById(blackId);
-        if (!white || !black) { cout << "Игрок не найден.\n"; return; }
-        club.createMatch(id, white, black, date);
-        cout << "Партия создана.\n";
-    } else {
-        for (const auto& e : club.getEvents()) {
-            if (auto t = dynamic_pointer_cast<Tournament>(e)) t->printInfo(cout);
-        }
-        int tourId = inputNumber<int>("ID турнира: ", 1, 100000);
-        auto tournament = dynamic_pointer_cast<Tournament>(club.findEventById(tourId));
-        if (!tournament) { cout << "Турнир не найден.\n"; return; }
-        cout << "Участники:\n";
-        for (const auto& p : tournament->getParticipants()) cout << " [" << p->getId() << "] " << p->getFullName() << "\n";
-        int id = inputNumber<int>("ID партии: ", 1, 100000);
-        int whiteId = inputNumber<int>("ID белого: ", 1, 100000);
-        int blackId = inputNumber<int>("ID чёрного: ", 1, 100000);
-        string date = inputString("Дата: ");
-        auto white = tournament->getParticipants().find([whiteId](const std::shared_ptr<Player>& p) { return p->getId() == whiteId; });
-        auto black = tournament->getParticipants().find([blackId](const std::shared_ptr<Player>& p) { return p->getId() == blackId; });
-        if (!white || !black) { cout << "Игрок не заявлен в турнире.\n"; return; }
-        auto match = make_shared<Match>(id, white, black, date);
-        try {
-            *tournament += match;
-            club.addMatch(match);
-            cout << "Партия создана.\n";
-        } catch (const ChessException& e) { cout << "Ошибка: " << e.what() << "\n"; }
-    }
 }
 
 void demoEnterMatchResult(ChessClub& club) {
@@ -319,6 +352,84 @@ void demoShowStandings(const ChessClub& club) {
         cout << i+1 << ". " << s.player->getFullName() << " | " 
              << s.points << " | " << s.wins << " | " << s.draws << " | " << s.losses << "\n";
     }
+}
+
+void demoUnenrollFromTraining(ChessClub& club) {
+    cout << "=== Открепление от тренировки ===\n";
+    club.printAllEvents();
+    int eventId = inputNumber<int>("ID тренировки: ", 1, 100000);
+    auto training = dynamic_pointer_cast<TrainingSession>(club.findEventById(eventId));
+    if (!training) { cout << "Не найдено.\n"; return; }
+    
+    for (const auto& p : training->getParticipants()) {
+        cout << " [" << p->getId() << "] " << p->getFullName() << "\n";
+    }
+    int playerId = inputNumber<int>("ID игрока: ", 1, 100000);
+    auto player = club.findPlayerById(playerId);
+    if (!player) { cout << "Игрок не найден.\n"; return; }
+    
+    try {
+        *training -= player;
+        cout << "Игрок откреплен от тренировки.\n";
+    } catch (const ChessException& e) { cout << "Ошибка: " << e.what() << "\n"; }
+}
+
+void demoUnenrollFromTournament(ChessClub& club) {
+    cout << "=== Открепление от турнира ===\n";
+    for (const auto& e : club.getEvents()) {
+        if (auto t = dynamic_pointer_cast<Tournament>(e)) t->printInfo(cout);
+    }
+    int tourId = inputNumber<int>("ID турнира: ", 1, 100000);
+    auto tournament = dynamic_pointer_cast<Tournament>(club.findEventById(tourId));
+    if (!tournament) { cout << "Не найдено.\n"; return; }
+    
+    for (const auto& p : tournament->getParticipants()) {
+        cout << " [" << p->getId() << "] " << p->getFullName() << "\n";
+    }
+    int playerId = inputNumber<int>("ID игрока: ", 1, 100000);
+    auto player = club.findPlayerById(playerId);
+    if (!player) { cout << "Игрок не найден.\n"; return; }
+    
+    try {
+        *tournament -= player;
+        cout << "Игрок откреплен от турнира.\n";
+    } catch (const ChessException& e) { cout << "Ошибка: " << e.what() << "\n"; }
+}
+
+void demoDeletePlayer(ChessClub& club) {
+    cout << "=== Удаление участника ===\n";
+    club.printAllPlayers();
+    int id = inputNumber<int>("ID участника: ", 1, 100000);
+    auto player = club.findPlayerById(id);
+    if (!player) { cout << "Не найден.\n"; return; }
+    try {
+        club.removePlayer(player);
+        cout << "Участник удален.\n";
+    } catch (const ChessException& e) { cout << "Ошибка: " << e.what() << "\n"; }
+}
+
+void demoDeleteEvent(ChessClub& club) {
+    cout << "=== Удаление события ===\n";
+    club.printAllEvents();
+    int id = inputNumber<int>("ID события: ", 1, 100000);
+    auto event = club.findEventById(id);
+    if (!event) { cout << "Не найдено.\n"; return; }
+    try {
+        club.removeEvent(event);
+        cout << "Событие удалено.\n";
+    } catch (const ChessException& e) { cout << "Ошибка: " << e.what() << "\n"; }
+}
+
+void demoDeleteMatch(ChessClub& club) {
+    cout << "=== Удаление партии ===\n";
+    club.printAllMatches();
+    int id = inputNumber<int>("ID партии: ", 1, 100000);
+    auto match = club.getMatches().find([id](const std::shared_ptr<Match>& m) { return m->getId() == id; });
+    if (!match) { cout << "Не найдена.\n"; return; }
+    try {
+        club.removeMatch(match);
+        cout << "Партия удалена.\n";
+    } catch (const ChessException& e) { cout << "Ошибка: " << e.what() << "\n"; }
 }
 
 void demoSaveState(const string& filename, const string& logFilename, const ChessClub& club) {
@@ -434,23 +545,28 @@ int main() {
     do {
         printMenu();
         try {
-            choice = inputNumber<int>("Выберите пункт: ", 0, 15);
+            choice = inputNumber<int>("Выберите пункт: ", 0, 20);
             switch (choice) {
-                case 1:  printCurrentState(club); break;
-                case 2:  club.printAllEvents(); break;
-                case 3:  club.printAllMatches(); break;
-                case 4:  demoAddPlayer(club); break;
-                case 5:  demoAddCoach(club); break;
-                case 6:  demoAddTournament(club); break;
-                case 7:  demoAddTraining(club); break;
-                case 8:  demoEnrollPlayerToTraining(club); break;
-                case 9:  demoEnrollPlayerToTournament(club); break;
-                case 10: demoCreateMatch(club); break;
-                case 11: demoEnterMatchResult(club); break;
+                case 1:  demoAddPlayer(club); break;
+                case 2:  demoAddCoach(club); break;
+                case 3:  demoAddTournament(club); break;
+                case 4:  demoAddTraining(club); break;
+                case 5:  demoCreateMatch(club); break;
+                case 6:  demoEnrollPlayerToTraining(club); break;
+                case 7:  demoEnrollPlayerToTournament(club); break;
+                case 8:  demoEnterMatchResult(club); break;
+                case 9:  printCurrentState(club); break;
+                case 10: club.printAllEvents(); break;
+                case 11: club.printAllMatches(); break;
                 case 12: demoShowStandings(club); break;
-                case 13: demoSaveState(filename, logFilename, club); break;
-                case 14: demoGenerateReport(reportFilename, logFilename, club); break;
-                case 15: runAnalyticsMenu(club); break;
+                case 13: demoUnenrollFromTraining(club); break;
+                case 14: demoUnenrollFromTournament(club); break;
+                case 15: demoDeletePlayer(club); break;
+                case 16: demoDeleteEvent(club); break;
+                case 17: demoDeleteMatch(club); break;
+                case 18: demoSaveState(filename, logFilename, club); break;
+                case 19: demoGenerateReport(reportFilename, logFilename, club); break;
+                case 20: runAnalyticsMenu(club); break;
                 case 0:  cout << "Выход.\n"; break;
                 default: cout << "Неверный пункт.\n"; break;
             }

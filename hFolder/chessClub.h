@@ -8,6 +8,7 @@
 #include "player.h"
 #include "event.h"
 #include "match.h"
+#include "dateTime.h"
 
 class ChessClub {
 public:
@@ -35,10 +36,11 @@ public:
     std::shared_ptr<Player> findPlayerByName(std::string_view namePart) const;
     std::shared_ptr<Event> findEventById(int id) const;
 
+    // Изменено: принимает DateTime вместо std::string_view
     void createMatch(int id,
                      std::shared_ptr<Player> white,
                      std::shared_ptr<Player> black,
-                     std::string_view date);
+                     const DateTime& date);
 
     void printAllPlayers() const;
     void printAllEvents() const;

@@ -72,9 +72,8 @@ void StorageManager::saveMatches(std::ofstream& ofs, const ChessClub& club) {
     const auto& matches = club.getMatches();
     ofs << matches.size() << "\n";
     for (const auto& m : matches) {
-        auto date = std::string(m->getDate());
         ofs << PREFIX_MATCH << " " << m->getId() << " " << m->getWhitePlayer()->getId() << " "
-            << m->getBlackPlayer()->getId() << " " << std::quoted(date) << " "
+            << m->getBlackPlayer()->getId() << " " << std::quoted(m->getDate().toString()) << " "
             << static_cast<int>(m->getResult().getResult()) << "\n";
     }
 }
@@ -158,12 +157,28 @@ void StorageManager::loadTraining(std::ifstream& ifs, ChessClub& club) {
 }
 
 void StorageManager::loadMatch(std::ifstream& ifs, ChessClub& club) {
-    std::string prefix, date;
+    std::string prefix, dateStr;
     int id, whiteId, blackId, resultInt;
-    if (!(ifs >> prefix >> id >> whiteId >> blackId >> std::quoted(date) >> resultInt)) {
+    
+    if (!(ifs >> prefix >> id >> whiteId >> blackId >> std::quoted(dateStr) >> resultInt)) {
         throw InvalidDataException("ошибка чтения партии");
     }
     if (prefix != PREFIX_MATCH) throw InvalidDataException("неверный префикс партии");
+
+    int d, m, y, h = 0, min = 0, s = 0;
+    char dot1, dot2;
+    std::stringstream ss(dateStr);
+    DateTime date;
+    if (ss >> d >> dot1 >> m >> dot2 >> y) {
+        if (ss >> h) {
+            char colon1, colon2;
+            ss >> colon1 >> min >> colon2 >> s;
+        }
+        date = DateTime(d, m, y, h, min, s);
+    } else {
+        throw InvalidDataException("неверный формат даты в файле: " + dateStr);
+    }
+
     auto white = club.findPlayerById(whiteId);
     auto black = club.findPlayerById(blackId);
     if (!white || !black) throw RelationException("игрок не найден");

@@ -2,9 +2,9 @@
 
 #include <memory>
 #include <string>
-#include <string_view>
 #include <iostream>
 #include "matchResult.h"
+#include "dateTime.h"
 
 class Player;
 
@@ -13,15 +13,15 @@ public:
     Match(int id,
           std::shared_ptr<Player> whitePlayer,
           std::shared_ptr<Player> blackPlayer,
-          std::string_view date);
+          const DateTime& date);
 
     int getId() const;
     std::shared_ptr<Player> getWhitePlayer() const;
     std::shared_ptr<Player> getBlackPlayer() const;
-    std::string_view getDate() const;
+    const DateTime& getDate() const;
     MatchResult getResult() const;
 
-    void setDate(std::string_view newDate);
+    void setDate(const DateTime& newDate);
     void setResult(MatchResult::Result newResult);
     void play(MatchResult::Result newResult);
 
@@ -34,6 +34,6 @@ private:
     int _id;
     std::shared_ptr<Player> _whitePlayer;
     std::shared_ptr<Player> _blackPlayer;
-    std::string _date;
+    DateTime _date;
     MatchResult _result;
 };
