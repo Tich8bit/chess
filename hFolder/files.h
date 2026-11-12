@@ -23,7 +23,7 @@ private:
     static void loadTraining(std::ifstream& ifs, ChessClub& club);
     static void loadMatch(std::ifstream& ifs, ChessClub& club);
 
-    static void reportPlayers(std::ofstream& ofs, const Collection<Player>& players);
+    static void reportPlayers(std::ofstream& ofs, const Collection<Member>& players);
     static void reportEvents(std::ofstream& ofs, const Collection<Event>& events);
     static void reportMatches(std::ofstream& ofs, const Collection<Match>& matches);
 

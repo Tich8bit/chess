@@ -179,9 +179,12 @@ void StorageManager::loadMatch(std::ifstream& ifs, ChessClub& club) {
         throw InvalidDataException("неверный формат даты в файле: " + dateStr);
     }
 
-    auto white = club.findPlayerById(whiteId);
-    auto black = club.findPlayerById(blackId);
-    if (!white || !black) throw RelationException("игрок не найден");
+    auto whiteMember = club.findPlayerById(whiteId);
+    auto blackMember = club.findPlayerById(blackId);
+    auto white = std::dynamic_pointer_cast<Player>(whiteMember);
+    auto black = std::dynamic_pointer_cast<Player>(blackMember);
+    
+    if (!white || !black) throw RelationException("участник не является игроком");
     
     auto match = std::make_shared<Match>(id, white, black, date);
     match->setResult(static_cast<MatchResult::Result>(resultInt));
@@ -197,7 +200,7 @@ void StorageManager::generateReport(const std::string& reportFilename, const Che
     reportMatches(ofs, club.getMatches());
 }
 
-void StorageManager::reportPlayers(std::ofstream& ofs, const Collection<Player>& players) {
+void StorageManager::reportPlayers(std::ofstream& ofs, const Collection<Member>& players) {
     ofs << "УЧАСТНИКИ (" << players.size() << "):\n";
     for (const auto& p : players) {
         ofs << "  - [" << p->getRole() << "] " << p->getFullName() << " | ID: " << p->getId() << "\n";
