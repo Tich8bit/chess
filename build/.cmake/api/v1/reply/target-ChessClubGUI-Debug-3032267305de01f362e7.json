@@ -1,0 +1,757 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "Debug/ChessClubGUI.exe"
+		},
+		{
+			"path" : "Debug/ChessClubGUI.pdb"
+		}
+	],
+	"backtrace" : 4,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_executable",
+			"_qt_internal_create_executable",
+			"qt6_add_executable",
+			"qt_add_executable",
+			"install",
+			"target_link_options",
+			"_qt_internal_finalize_windows_app",
+			"_qt_internal_finalize_executable",
+			"qt6_finalize_target",
+			"qt_finalize_executable",
+			"target_link_libraries",
+			"set_target_properties",
+			"include",
+			"find_package",
+			"find_dependency",
+			"_qt_internal_find_qt_dependencies",
+			"target_include_directories",
+			"target_sources"
+		],
+		"files" : 
+		[
+			"C:/Qt/6.12.0/msvc2022_64/lib/cmake/Qt6Core/Qt6CoreMacros.cmake",
+			"CMakeLists.txt",
+			"C:/Qt/6.12.0/msvc2022_64/lib/cmake/Qt6/QtPublicWindowsHelpers.cmake",
+			"C:/Qt/6.12.0/msvc2022_64/lib/cmake/Qt6Widgets/Qt6WidgetsTargets.cmake",
+			"C:/Qt/6.12.0/msvc2022_64/lib/cmake/Qt6Widgets/Qt6WidgetsConfig.cmake",
+			"C:/Qt/6.12.0/msvc2022_64/lib/cmake/Qt6/Qt6Config.cmake",
+			"C:/Qt/6.12.0/msvc2022_64/lib/cmake/Qt6Core/Qt6CoreTargets.cmake",
+			"C:/Qt/6.12.0/msvc2022_64/lib/cmake/Qt6Core/Qt6CoreConfig.cmake",
+			"C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeFindDependencyMacro.cmake",
+			"C:/Qt/6.12.0/msvc2022_64/lib/cmake/Qt6/QtPublicDependencyHelpers.cmake",
+			"C:/Qt/6.12.0/msvc2022_64/lib/cmake/Qt6Widgets/Qt6WidgetsDependencies.cmake",
+			"C:/Qt/6.12.0/msvc2022_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointPrivateTargets.cmake",
+			"C:/Qt/6.12.0/msvc2022_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointPrivateConfig.cmake",
+			"C:/Qt/6.12.0/msvc2022_64/lib/cmake/Qt6Core/Qt6CoreDependencies.cmake",
+			"C:/Qt/6.12.0/msvc2022_64/lib/cmake/Qt6Gui/Qt6GuiTargets.cmake",
+			"C:/Qt/6.12.0/msvc2022_64/lib/cmake/Qt6Gui/Qt6GuiConfig.cmake"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 40,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 1115,
+				"parent" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 687,
+				"parent" : 2
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 780,
+				"parent" : 3
+			},
+			{
+				"command" : 4,
+				"file" : 1,
+				"line" : 71,
+				"parent" : 0
+			},
+			{
+				"command" : 9,
+				"file" : 1,
+				"line" : 78,
+				"parent" : 0
+			},
+			{
+				"command" : 8,
+				"file" : 0,
+				"line" : 1123,
+				"parent" : 6
+			},
+			{
+				"command" : 7,
+				"file" : 0,
+				"line" : 915,
+				"parent" : 7
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 849,
+				"parent" : 8
+			},
+			{
+				"command" : 5,
+				"file" : 2,
+				"line" : 131,
+				"parent" : 9
+			},
+			{
+				"command" : 10,
+				"file" : 1,
+				"line" : 61,
+				"parent" : 0
+			},
+			{
+				"command" : 13,
+				"file" : 1,
+				"line" : 14,
+				"parent" : 0
+			},
+			{
+				"file" : 5,
+				"parent" : 12
+			},
+			{
+				"command" : 13,
+				"file" : 5,
+				"line" : 257,
+				"parent" : 13
+			},
+			{
+				"file" : 4,
+				"parent" : 14
+			},
+			{
+				"command" : 12,
+				"file" : 4,
+				"line" : 55,
+				"parent" : 15
+			},
+			{
+				"file" : 3,
+				"parent" : 16
+			},
+			{
+				"command" : 11,
+				"file" : 3,
+				"line" : 61,
+				"parent" : 17
+			},
+			{
+				"command" : 10,
+				"file" : 0,
+				"line" : 688,
+				"parent" : 2
+			},
+			{
+				"command" : 12,
+				"file" : 4,
+				"line" : 40,
+				"parent" : 15
+			},
+			{
+				"file" : 10,
+				"parent" : 20
+			},
+			{
+				"command" : 15,
+				"file" : 10,
+				"line" : 51,
+				"parent" : 21
+			},
+			{
+				"command" : 14,
+				"file" : 9,
+				"line" : 142,
+				"parent" : 22
+			},
+			{
+				"command" : 13,
+				"file" : 8,
+				"line" : 76,
+				"parent" : 23
+			},
+			{
+				"file" : 7,
+				"parent" : 24
+			},
+			{
+				"command" : 12,
+				"file" : 7,
+				"line" : 59,
+				"parent" : 25
+			},
+			{
+				"file" : 6,
+				"parent" : 26
+			},
+			{
+				"command" : 11,
+				"file" : 6,
+				"line" : 61,
+				"parent" : 27
+			},
+			{
+				"command" : 12,
+				"file" : 7,
+				"line" : 44,
+				"parent" : 25
+			},
+			{
+				"file" : 13,
+				"parent" : 29
+			},
+			{
+				"command" : 15,
+				"file" : 13,
+				"line" : 52,
+				"parent" : 30
+			},
+			{
+				"command" : 14,
+				"file" : 9,
+				"line" : 142,
+				"parent" : 31
+			},
+			{
+				"command" : 13,
+				"file" : 8,
+				"line" : 76,
+				"parent" : 32
+			},
+			{
+				"file" : 12,
+				"parent" : 33
+			},
+			{
+				"command" : 12,
+				"file" : 12,
+				"line" : 55,
+				"parent" : 34
+			},
+			{
+				"file" : 11,
+				"parent" : 35
+			},
+			{
+				"command" : 11,
+				"file" : 11,
+				"line" : 61,
+				"parent" : 36
+			},
+			{
+				"command" : 11,
+				"file" : 11,
+				"line" : 94,
+				"parent" : 36
+			},
+			{
+				"command" : 14,
+				"file" : 9,
+				"line" : 142,
+				"parent" : 22
+			},
+			{
+				"command" : 13,
+				"file" : 8,
+				"line" : 76,
+				"parent" : 39
+			},
+			{
+				"file" : 15,
+				"parent" : 40
+			},
+			{
+				"command" : 12,
+				"file" : 15,
+				"line" : 55,
+				"parent" : 41
+			},
+			{
+				"file" : 14,
+				"parent" : 42
+			},
+			{
+				"command" : 11,
+				"file" : 14,
+				"line" : 61,
+				"parent" : 43
+			},
+			{
+				"command" : 16,
+				"file" : 1,
+				"line" : 56,
+				"parent" : 0
+			},
+			{
+				"command" : 17,
+				"file" : 2,
+				"line" : 126,
+				"parent" : 9
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd"
+				},
+				{
+					"backtrace" : 19,
+					"fragment" : "-Zc:__cplusplus"
+				},
+				{
+					"backtrace" : 19,
+					"fragment" : "-permissive-"
+				},
+				{
+					"backtrace" : 19,
+					"fragment" : "-utf-8"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 19,
+					"define" : "QT_CORE_LIB"
+				},
+				{
+					"backtrace" : 11,
+					"define" : "QT_GUI_LIB"
+				},
+				{
+					"backtrace" : 11,
+					"define" : "QT_WIDGETS_LIB"
+				},
+				{
+					"backtrace" : 19,
+					"define" : "UNICODE"
+				},
+				{
+					"backtrace" : 19,
+					"define" : "WIN32"
+				},
+				{
+					"backtrace" : 19,
+					"define" : "WIN64"
+				},
+				{
+					"backtrace" : 19,
+					"define" : "_ENABLE_EXTENDED_ALIGNED_STORAGE"
+				},
+				{
+					"backtrace" : 19,
+					"define" : "_UNICODE"
+				},
+				{
+					"backtrace" : 19,
+					"define" : "_WIN64"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 0,
+					"path" : "C:/Users/User/OneDrive/Desktop/chess/build/ChessClubGUI_autogen/include_Debug"
+				},
+				{
+					"backtrace" : 45,
+					"path" : "C:/Users/User/OneDrive/Desktop/chess/ChessClubGUI/../hFolder"
+				},
+				{
+					"backtrace" : 45,
+					"path" : "C:/Users/User/OneDrive/Desktop/chess/ChessClubGUI/../hFolder/exceptions"
+				},
+				{
+					"backtrace" : 19,
+					"isSystem" : true,
+					"path" : "C:/Qt/6.12.0/msvc2022_64/include/QtCore"
+				},
+				{
+					"backtrace" : 19,
+					"isSystem" : true,
+					"path" : "C:/Qt/6.12.0/msvc2022_64/include"
+				},
+				{
+					"backtrace" : 19,
+					"isSystem" : true,
+					"path" : "C:/Qt/6.12.0/msvc2022_64/mkspecs/win32-msvc"
+				},
+				{
+					"backtrace" : 11,
+					"isSystem" : true,
+					"path" : "C:/Qt/6.12.0/msvc2022_64/include/QtWidgets"
+				},
+				{
+					"backtrace" : 11,
+					"isSystem" : true,
+					"path" : "C:/Qt/6.12.0/msvc2022_64/include/QtGui"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					19,
+					19
+				],
+				"standard" : "20"
+			},
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df"
+		}
+	],
+	"id" : "ChessClubGUI::@6890427a1f51a3e7e1df",
+	"install" : 
+	{
+		"destinations" : 
+		[
+			{
+				"backtrace" : 5,
+				"path" : "bin"
+			}
+		],
+		"prefix" : 
+		{
+			"path" : "C:/Program Files/ChessClubGUI"
+		}
+	},
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "/machine:x64 /debug /INCREMENTAL /subsystem:windows",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 10,
+				"fragment" : "/MANIFEST:NO",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 10,
+				"fragment" : "/MANIFESTUAC:NO",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 11,
+				"fragment" : "C:\\Qt\\6.12.0\\msvc2022_64\\lib\\Qt6Widgetsd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 18,
+				"fragment" : "C:\\Qt\\6.12.0\\msvc2022_64\\lib\\Qt6Guid.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 19,
+				"fragment" : "C:\\Qt\\6.12.0\\msvc2022_64\\lib\\Qt6Cored.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 28,
+				"fragment" : "mpr.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 28,
+				"fragment" : "userenv.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 37,
+				"fragment" : "C:\\Qt\\6.12.0\\msvc2022_64\\lib\\Qt6EntryPointd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 38,
+				"fragment" : "shell32.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 44,
+				"fragment" : "d3d11.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 44,
+				"fragment" : "dxgi.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 44,
+				"fragment" : "dxguid.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 44,
+				"fragment" : "d3d12.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "ChessClubGUI",
+	"nameOnDisk" : "ChessClubGUI.exe",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19
+			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				3,
+				21
+			]
+		},
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				4,
+				20,
+				22
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				23
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/build/ChessClubGUI_autogen/mocs_compilation_Debug.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "main.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "mainwindow.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "mainwindow.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "mainwindow.ui",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/cppFolder/analytics.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/cppFolder/chessClub.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/cppFolder/coach.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/cppFolder/dateTime.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/cppFolder/event.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/cppFolder/files.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/cppFolder/match.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/cppFolder/matchResult.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/cppFolder/member.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/cppFolder/player.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/cppFolder/ratings.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/cppFolder/specialization.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/cppFolder/tournament.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/cppFolder/tournamentSystem.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/cppFolder/trainingSession.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 46,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/build/ChessClubGUI.exe.manifest",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/build/ChessClubGUI_autogen/include_Debug/ui_mainwindow.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/build/ChessClubGUI_autogen/autouic_Debug.stamp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "C:/Users/User/OneDrive/Desktop/chess/build/CMakeFiles/e6bc86efadf1f0f5e39f9543e312935e/autouic_(CONFIG).stamp.rule",
+			"sourceGroupIndex" : 3
+		}
+	],
+	"type" : "EXECUTABLE"
+}

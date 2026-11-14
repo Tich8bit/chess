@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\build\ChessClubGUI_autogen\mocs_compilation_Debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\ChessClubGUI\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\ChessClubGUI\mainwindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\cppFolder\analytics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\cppFolder\chessClub.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\cppFolder\coach.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\cppFolder\dateTime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\cppFolder\event.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\cppFolder\files.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\cppFolder\match.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\cppFolder\matchResult.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\cppFolder\member.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\cppFolder\player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\cppFolder\ratings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\cppFolder\specialization.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\cppFolder\tournament.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\cppFolder\tournamentSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\cppFolder\trainingSession.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\build\ChessClubGUI_autogen\mocs_compilation_Release.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\build\ChessClubGUI_autogen\mocs_compilation_MinSizeRel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\User\OneDrive\Desktop\chess\build\ChessClubGUI_autogen\mocs_compilation_RelWithDebInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\User\OneDrive\Desktop\chess\ChessClubGUI\mainwindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\User\OneDrive\Desktop\chess\build\ChessClubGUI_autogen\include_Debug\ui_mainwindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\User\OneDrive\Desktop\chess\build\ChessClubGUI_autogen\include_Release\ui_mainwindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\User\OneDrive\Desktop\chess\build\ChessClubGUI_autogen\include_MinSizeRel\ui_mainwindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\User\OneDrive\Desktop\chess\build\ChessClubGUI_autogen\include_RelWithDebInfo\ui_mainwindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\User\OneDrive\Desktop\chess\build\CMakeFiles\e6bc86efadf1f0f5e39f9543e312935e\autouic_(CONFIG).stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\User\OneDrive\Desktop\chess\ChessClubGUI\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\User\OneDrive\Desktop\chess\ChessClubGUI\mainwindow.ui" />
+    <None Include="C:\Users\User\OneDrive\Desktop\chess\build\ChessClubGUI_autogen\autouic_Debug.stamp" />
+    <None Include="C:\Users\User\OneDrive\Desktop\chess\build\ChessClubGUI_autogen\autouic_Release.stamp" />
+    <None Include="C:\Users\User\OneDrive\Desktop\chess\build\ChessClubGUI_autogen\autouic_MinSizeRel.stamp" />
+    <None Include="C:\Users\User\OneDrive\Desktop\chess\build\ChessClubGUI_autogen\autouic_RelWithDebInfo.stamp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{7C804852-D803-3246-B1B9-12101ACCEE78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{505EF05B-0735-382E-8ACE-037E990E8FC5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{1FFC3E41-F609-3282-8E27-0BB87E0BAE87}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

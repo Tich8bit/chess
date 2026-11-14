@@ -1,0 +1,22 @@
+^C:\USERS\USER\ONEDRIVE\DESKTOP\CHESS\BUILD\CMAKEFILES\E6BC86EFADF1F0F5E39F9543E312935E\AUTOUIC_(CONFIG).STAMP.RULE
+setlocal
+cd C:\Users\User\OneDrive\Desktop\chess\build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\USER\ONEDRIVE\DESKTOP\CHESS\CHESSCLUBGUI\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/User/OneDrive/Desktop/chess/ChessClubGUI -BC:/Users/User/OneDrive/Desktop/chess/build --check-stamp-file C:/Users/User/OneDrive/Desktop/chess/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -1,0 +1,10 @@
+^C:\USERS\USER\ONEDRIVE\DESKTOP\CHESS\BUILD\CMAKEFILES\23036684781F4979966FED853365B4EE\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/User/OneDrive/Desktop/chess/ChessClubGUI -BC:/Users/User/OneDrive/Desktop/chess/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/User/OneDrive/Desktop/chess/build/ChessClubGUI.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

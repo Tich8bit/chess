@@ -1,0 +1,4 @@
+C:/Users/User/OneDrive/Desktop/chess/build/CMakeFiles/ChessClubGUI.dir
+C:/Users/User/OneDrive/Desktop/chess/build/CMakeFiles/INSTALL.dir
+C:/Users/User/OneDrive/Desktop/chess/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/User/OneDrive/Desktop/chess/build/CMakeFiles/ZERO_CHECK.dir
